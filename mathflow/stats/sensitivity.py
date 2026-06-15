@@ -100,7 +100,7 @@ class SensitivityAnalysis:
         )
         return self._result
 
-    def morris_screening(self, n_trajectories=10, n_levels=4, seed=42):
+    def morris_screening(self, n_trajectories=10, n_levels=4, seed=42, bounds=None):
         """
         Morris 筛选法 (Morris Screening / Elementary Effects).
 
@@ -112,10 +112,15 @@ class SensitivityAnalysis:
             轨迹数
         n_levels : int
             水平数
+        bounds : list of (min, max), optional
+            参数范围，若提供则将 [0,1] 映射到实际范围
         """
         np.random.seed(seed)
         p = self.n_vars
         delta = 1.0 / (n_levels - 1)
+
+        if bounds is not None:
+            bounds = np.array(bounds)
 
         # 生成基准网格
         grid = np.linspace(0, 1, n_levels)
@@ -127,8 +132,11 @@ class SensitivityAnalysis:
             x_norm = np.random.choice(grid, p)
 
             # 计算基准输出
-            x_base = x_norm.copy()
-            base_out = self.model_func(x_base)
+            if bounds is not None:
+                x_real = bounds[:, 0] + x_norm * (bounds[:, 1] - bounds[:, 0])
+            else:
+                x_real = x_norm.copy()
+            base_out = self.model_func(x_real)
 
             # 随机排列参数扰动顺序
             order = np.random.permutation(p)
@@ -141,7 +149,11 @@ class SensitivityAnalysis:
                 else:
                     x_pert[idx] -= delta
 
-                pert_out = self.model_func(x_pert)
+                if bounds is not None:
+                    x_pert_real = bounds[:, 0] + x_pert * (bounds[:, 1] - bounds[:, 0])
+                else:
+                    x_pert_real = x_pert
+                pert_out = self.model_func(x_pert_real)
                 ee = (pert_out - base_out) / delta
                 elementary_effects[idx].append(ee)
 
@@ -215,6 +227,10 @@ class SensitivityAnalysis:
             s1[i] = np.mean(f_b * (f_ab_i - f_a)) / var_y if var_y > 0 else 0
             # 总效应指数
             st[i] = 0.5 * np.mean((f_a - f_ab_i)**2) / var_y if var_y > 0 else 0
+
+        # Clip to valid range
+        s1 = np.clip(s1, 0, 1)
+        st = np.clip(st, 0, 1)
 
         self._result = SensitivityResult(
             method="Sobol",

@@ -104,6 +104,14 @@ class NSGA2:
         final_fronts = self._non_dominated_sort(obj_values)
         pareto_idx = final_fronts[0]
 
+        # Deduplicate
+        unique_solutions = {}
+        for idx in pareto_idx:
+            key = tuple(np.round(pop[idx], 6))
+            if key not in unique_solutions:
+                unique_solutions[key] = idx
+        pareto_idx = list(unique_solutions.values())
+
         self._result = NSGAResult(
             pareto_front=obj_values[pareto_idx],
             pareto_solutions=pop[pareto_idx],
@@ -192,10 +200,16 @@ class NSGA2:
         n = len(pop)
         offspring = np.zeros_like(pop)
 
+        # Build rank_dict for O(1) rank lookups
+        rank_dict = {}
+        for rank, front in enumerate(fronts):
+            for idx in front:
+                rank_dict[idx] = rank
+
         for i in range(0, n, 2):
             # 锦标赛选择
-            p1 = self._tournament_select(fronts, crowding, n)
-            p2 = self._tournament_select(fronts, crowding, n)
+            p1 = self._tournament_select(crowding, n, rank_dict, len(fronts))
+            p2 = self._tournament_select(crowding, n, rank_dict, len(fronts))
 
             # 交叉 (SBX)
             if np.random.random() < 0.9:
@@ -213,11 +227,11 @@ class NSGA2:
 
         return offspring
 
-    def _tournament_select(self, fronts, crowding, n):
+    def _tournament_select(self, crowding, n, rank_dict, n_fronts):
         """锦标赛选择."""
         a, b = np.random.randint(0, n, 2)
-        rank_a = next((i for i, f in enumerate(fronts) if a in f), len(fronts))
-        rank_b = next((i for i, f in enumerate(fronts) if b in f), len(fronts))
+        rank_a = rank_dict.get(a, n_fronts)
+        rank_b = rank_dict.get(b, n_fronts)
         if rank_a < rank_b:
             return a
         elif rank_b < rank_a:

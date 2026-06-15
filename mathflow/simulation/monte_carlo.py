@@ -78,6 +78,8 @@ class MonteCarlo:
         distributions : list of callable
             各随机变量的分布函数 (返回抽样值)
         """
+        if distributions is None:
+            raise ValueError("需要提供 distributions 参数")
         np.random.seed(self.seed)
         results = []
         for _ in range(n_samples):

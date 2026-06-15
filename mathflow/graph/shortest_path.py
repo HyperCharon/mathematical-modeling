@@ -69,10 +69,10 @@ class ShortestPath:
         for i in range(n):
             for j in range(n):
                 if directed:
-                    if j > i and matrix[i, j] < inf:
+                    if matrix[i, j] < inf and matrix[i, j] != 0:
                         self.add_edge(i, j, matrix[i, j], directed=True)
                 else:
-                    if j > i and matrix[i, j] < inf:
+                    if j > i and matrix[i, j] < inf and matrix[i, j] != 0:
                         self.add_edge(i, j, matrix[i, j], directed=False)
         return self
 

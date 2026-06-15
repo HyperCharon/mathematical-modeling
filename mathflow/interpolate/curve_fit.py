@@ -128,10 +128,18 @@ class CurveFitter:
         r2 = 1 - np.sum((self.y - y_hat)**2) / np.sum((self.y - self.y.mean())**2)
         rmse = np.sqrt(np.mean((self.y - y_hat)**2))
 
+        if r2 < -1:
+            import warnings
+            warnings.warn(f"{model_name} 拟合失败: R²={r2:.4f}，建议使用其他模型", UserWarning)
+
         # 构建方程字符串
         equation = model["equation"]
         for name, val in zip(model["param_names"], popt):
-            equation = equation.replace(name, f"{val:.4f}")
+            if abs(val) < 1e-8:
+                # skip near-zero coefficients in display
+                equation = equation.replace(f"{name}·", "").replace(f"+ {name}", "").replace(f"- {name}", "").replace(name, f"{val:.4f}")
+            else:
+                equation = equation.replace(name, f"{val:.4f}")
 
         self._result = FitResult(
             func_name=model_name,

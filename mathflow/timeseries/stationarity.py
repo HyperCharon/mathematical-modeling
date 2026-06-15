@@ -23,7 +23,7 @@ class StationarityResult:
     adf_is_stationary: bool
     kpss_statistic: float
     kpss_p_value: float
-    kpss_is_stationary: float
+    kpss_is_stationary: bool
     conclusion: str
 
 
@@ -48,7 +48,7 @@ class StationarityTest:
         """ADF (Augmented Dickey-Fuller) 检验."""
         try:
             from statsmodels.tsa.stattools import adfuller
-            result = adfuller(self.data, maxlag=20, autolag="AIC")
+            result = adfuller(self.data, maxlag=min(20, (len(self.data) - 1) // 2 - 1), autolag="AIC")
             return {
                 "statistic": result[0],
                 "p_value": result[1],
@@ -132,7 +132,7 @@ class StationarityTest:
         for d in range(max_d + 1):
             try:
                 from statsmodels.tsa.stattools import adfuller
-                result = adfuller(series, maxlag=20, autolag="AIC")
+                result = adfuller(series, maxlag=min(20, (len(series) - 1) // 2 - 1), autolag="AIC")
                 if result[1] < 0.05:
                     return d
             except Exception:

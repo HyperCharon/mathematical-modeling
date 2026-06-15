@@ -100,7 +100,10 @@ class AbstractGenerator:
 
         # 中间段: 各问题的求解
         for i, sol in enumerate(self.solutions, 1):
-            model_desc = f"建立了{sol['model_name']}模型，" if sol["model_name"] else ""
+            model_name = sol['model_name']
+            if model_name.endswith('模型'):
+                model_name = model_name[:-2]
+            model_desc = f"建立了{model_name}模型，" if sol["model_name"] else ""
             lines.append(
                 f"对于问题{i}（{sol['description']}），"
                 f"本文{model_desc}"
@@ -150,7 +153,10 @@ class AbstractGenerator:
 
         # 各问题详细描述
         for i, sol in enumerate(self.solutions, 1):
-            model_desc = f"建立了{sol['model_name']}模型，" if sol["model_name"] else ""
+            model_name = sol['model_name']
+            if model_name.endswith('模型'):
+                model_name = model_name[:-2]
+            model_desc = f"建立了{model_name}模型，" if sol["model_name"] else ""
             lines.append(
                 f"针对问题{i}（{sol['description']}），"
                 f"{model_desc}"

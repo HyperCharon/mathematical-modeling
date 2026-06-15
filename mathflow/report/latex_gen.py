@@ -114,7 +114,8 @@ class LatexReport:
             tex += f"  \\label{{{label}}}\n"
         tex += "\\end{equation}\n"
         self._content.append(tex)
-        return f"方程组"
+        self._equations.append({"equation": equations, "label": label})
+        return f"方程组{len(self._equations)}"
 
     def add_table(self, headers: List[str], rows: List[List], caption: str = "",
                   label: str = None, alignment: str = None) -> str:
@@ -290,9 +291,36 @@ class LatexReport:
             sig = "***" if r.p_values[idx] < 0.001 else "**" if r.p_values[idx] < 0.01 else "*" if r.p_values[idx] < 0.05 else ""
             rows.append([var_names[i], f"{r.coefficients[i]:.4f}", f"{r.std_errors[idx]:.4f}",
                          f"{r.t_values[idx]:.4f}", f"{r.p_values[idx]:.4f}", sig])
-        self.add_table(headers, rows, caption="多元回归系数表", label="tab:regression")
+        return self.add_table(headers, rows, caption="多元回归系数表", label="tab:regression")
 
     # ========== 输出 ==========
+
+    def _build_preamble(self) -> str:
+        """构建 LaTeX 导言区字符串."""
+        return r"""\documentclass[12pt,a4paper]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+\title{""" + self.title + r"""}
+\author{""" + self.authors + r"""}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+"""
 
     def build(self) -> str:
         """构建完整 LaTeX 文档."""
@@ -303,7 +331,8 @@ class LatexReport:
     def save(self, filepath: str):
         """保存为 .tex 文件."""
         if not self._content or "\\documentclass" not in self._content[0]:
-            self.add_preamble()
+            preamble = self._build_preamble()
+            self._content.insert(0, preamble)
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(self.build())
         print(f"  ✅ LaTeX 报告已保存: {filepath}")

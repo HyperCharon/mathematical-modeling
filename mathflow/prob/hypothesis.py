@@ -78,6 +78,9 @@ class HypothesisTest:
         if expected is not None:
             expected = np.asarray(expected, dtype=float)
         chi2, p_value = stats.chisquare(observed, expected)
+        if not np.isscalar(p_value):
+            p_value = p_value.min()
+            chi2 = chi2.min()
         significant = p_value < self.alpha
         conclusion = f"拒绝H0，观测频数与期望频数{'有' if significant else '无'}显著差异"
 

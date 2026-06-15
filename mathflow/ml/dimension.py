@@ -141,7 +141,7 @@ class DimensionReduction:
 
         # 绘制特征向量
         scale = max(r.transformed[:, 0].max(), r.transformed[:, 1].max()) * 0.8
-        for i, (comp0, comp1) in enumerate(zip(r.components_[0], r.components_[1])):
+        for i, (comp0, comp1) in enumerate(zip(r.components[0], r.components[1])):
             ax.annotate("",
                         xy=(comp0 * scale, comp1 * scale),
                         xytext=(0, 0),
@@ -161,14 +161,14 @@ class DimensionReduction:
         r = self._result
         n = r.n_components
         if feature_names is None:
-            feature_names = [f"x{i+1}" for i in range(r.components_.shape[1])]
+            feature_names = [f"x{i+1}" for i in range(r.components.shape[1])]
 
         lines = ["=" * 60, "  PCA 主成分分析结果", "=" * 60]
         for i in range(n):
             lines.append(f"  PC{i+1}: 方差贡献率={r.explained_variance_ratio[i]*100:.2f}%, "
                          f"累计={r.cumulative_variance[i]*100:.2f}%")
             # 主成分载荷
-            loadings = sorted(zip(feature_names, r.components_[i]),
+            loadings = sorted(zip(feature_names, r.components[i]),
                               key=lambda x: abs(x[1]), reverse=True)
             top3 = [f"{name}({val:.3f})" for name, val in loadings[:3]]
             lines.append(f"         主要载荷: {', '.join(top3)}")

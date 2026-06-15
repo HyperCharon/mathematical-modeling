@@ -20,7 +20,22 @@ class MembershipFunction:
     def triangle(x, a, b, c):
         """三角形隶属函数."""
         x = np.asarray(x, dtype=float)
-        return np.maximum(0, np.minimum((x - a) / (b - a + 1e-10), (c - x) / (c - b + 1e-10)))
+        result = np.zeros_like(x)
+        if abs(b - a) < 1e-10 and abs(c - b) < 1e-10:  # a==b==c
+            result[np.abs(x - a) < 1e-10] = 1.0
+        elif abs(b - a) < 1e-10:  # a==b, right triangle
+            mask = (x >= b) & (x <= c)
+            result[mask] = (c - x[mask]) / (c - b + 1e-10)
+        elif abs(c - b) < 1e-10:  # b==c, left triangle
+            mask = (x >= a) & (x <= b)
+            result[mask] = (x[mask] - a) / (b - a + 1e-10)
+        else:  # normal case
+            mask = (x >= a) & (x <= c)
+            result[mask] = np.maximum(0, np.minimum(
+                (x[mask] - a) / (b - a),
+                (c - x[mask]) / (c - b)
+            ))
+        return result
 
     @staticmethod
     def trapezoid(x, a, b, c, d):

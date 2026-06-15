@@ -122,7 +122,7 @@ class ARIMAModel:
         series = self.data.copy()
         for d in range(max_d + 1):
             try:
-                adf_result = adfuller(series, maxlag=20, autolag="AIC")
+                adf_result = adfuller(series, maxlag=min(20, (len(series) - 1) // 2 - 1), autolag="AIC")
                 if adf_result[1] < 0.05:  # p-value < 0.05 → 平稳
                     return d
             except Exception:
