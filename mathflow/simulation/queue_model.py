@@ -126,23 +126,26 @@ class QueueModel:
         return self._result
 
     def simulate(self, n_arrivals=10000, seed=42):
-        """离散事件仿真验证."""
+        """离散事件仿真验证 (支持多服务器)."""
         np.random.seed(seed)
-        lam, mu = self.lambda_, self.service_rate
+        lam, mu, c = self.lambda_, self.mu, self.c
 
         inter_arrivals = np.random.exponential(1 / lam, n_arrivals)
         service_times = np.random.exponential(1 / mu, n_arrivals)
 
         arrival_times = np.cumsum(inter_arrivals)
+        # c 个服务器的空闲时间
+        server_free_at = np.zeros(c)
+
         start_service = np.zeros(n_arrivals)
         departure_times = np.zeros(n_arrivals)
 
-        start_service[0] = arrival_times[0]
-        departure_times[0] = start_service[0] + service_times[0]
-
-        for i in range(1, n_arrivals):
-            start_service[i] = max(arrival_times[i], departure_times[i - 1])
+        for i in range(n_arrivals):
+            # 找最早空闲的服务器
+            earliest_server = np.argmin(server_free_at)
+            start_service[i] = max(arrival_times[i], server_free_at[earliest_server])
             departure_times[i] = start_service[i] + service_times[i]
+            server_free_at[earliest_server] = departure_times[i]
 
         wait_times = start_service - arrival_times
         system_times = departure_times - arrival_times

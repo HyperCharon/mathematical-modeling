@@ -67,6 +67,25 @@ print(f"未来3年预测: {gp.predict(steps=3)}")
 
 ## 📚 模块总览
 
+### 常微分方程 (`mathflow.ode`)
+
+| 模型 | 类名/函数 | 说明 |
+|------|----------|------|
+| ODE 求解器 | `ODESolver` | Euler / Heun / RK4 / scipy，支持方程组 |
+| SIR 传染病模型 | `sir_model()` | 经典 SIR，可调 β/γ |
+| Lotka-Volterra | `lotka_volterra()` | 捕食者-被捕食者动力学 |
+| 阻尼振动 | `damped_oscillator()` | 二阶ODE转一阶方程组 |
+| 一维热传导 | `heat_equation_1d()` | 有限差分法求解 PDE |
+| 一维波动方程 | `wave_equation_1d()` | 波的传播与反射 |
+
+### 统计分析 (`mathflow.stats`)
+
+| 模型 | 类名 | 说明 |
+|------|------|------|
+| 多元回归 | `MultiRegression` | 完整统计报告 (R², F, t, p, DW)，回归诊断图 |
+| 方差分析 | `ANOVA` | 单因素 ANOVA，自动显著性判断 |
+| 灵敏度分析 | `SensitivityAnalysis` | OAT 单因素 / Morris 筛选 / Sobol 全局灵敏度 |
+
 ### 评价类 (`mathflow.evaluate`)
 
 | 模型 | 类名 | 说明 |
@@ -190,19 +209,19 @@ fig = lp.plot_feasible_region()  # 可行域可视化
 ```
 mathematical-modeling/
 ├── mathflow/
-│   ├── evaluate/      # 评价类模型 (AHP, TOPSIS, 熵权法, CRITIC, GRA, 模糊, RSR)
-│   ├── predict/       # 预测类模型 (灰色, ARIMA, 指数平滑, 回归)
-│   ├── optimize/      # 优化类模型 (LP, IP, GA, PSO, SA)
+│   ├── evaluate/      # 评价类 (AHP, TOPSIS, 熵权法, CRITIC, GRA, 模糊, RSR)
+│   ├── predict/       # 预测类 (灰色预测, ARIMA, 指数平滑, 回归)
+│   ├── optimize/      # 优化类 (LP, IP, GA, PSO, SA)
 │   ├── graph/         # 图论 (最短路, MST, 网络流, TSP)
 │   ├── simulation/    # 仿真 (蒙特卡洛, 排队论)
 │   ├── ml/            # 机器学习 (聚类, 降维)
+│   ├── ode/           # 常微分方程 (SIR, Lotka-Volterra, 热传导, 波动)
+│   ├── stats/         # 统计分析 (多元回归, ANOVA, 灵敏度分析)
 │   ├── data/          # 数据处理 (加载, 清洗)
 │   ├── viz/           # 可视化 (论文风格)
-│   ├── core/          # 核心工具 (配置, 验证)
-│   ├── report/        # 报告生成
-│   └── templates/     # 赛题模板
-├── examples/          # 使用示例
-├── tests/             # 测试用例
+│   └── core/          # 核心工具 (配置, 验证)
+├── examples/          # 8 个完整示例 (含真实赛题场景)
+├── tests/             # 31 个单元测试
 └── docs/              # 文档
 ```
 
