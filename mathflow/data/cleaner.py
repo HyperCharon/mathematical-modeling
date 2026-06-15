@@ -107,7 +107,7 @@ class DataCleaner:
             missing_pct = missing / len(df) * 100
             dtype = df[col].dtype
             info = f"  {col:>20s}  类型={str(dtype):>10s}  缺失={missing}({missing_pct:.1f}%)"
-            if np.issubdtype(df[col].dtype, np.number):
+            if pd.api.types.is_numeric_dtype(df[col]):
                 info += f"  范围=[{df[col].min():.2f}, {df[col].max():.2f}]"
             lines.append(info)
 
