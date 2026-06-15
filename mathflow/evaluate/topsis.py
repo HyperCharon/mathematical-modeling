@@ -99,6 +99,7 @@ class TOPSIS:
 
         # Step 5: 计算综合得分
         scores = dist_worst / (dist_best + dist_worst)
+        scores = np.nan_to_num(scores, nan=0.5)  # All identical → score 0.5
 
         # Step 6: 排名 (得分越高排名越靠前)
         rankings = np.argsort(np.argsort(-scores)) + 1

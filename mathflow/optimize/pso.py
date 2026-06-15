@@ -110,6 +110,7 @@ class PSO:
 
                 # 评估
                 f = self.fitness_func(pos[i])
+                fitness[i] = f
 
                 # 更新个体最优
                 if f > p_best_fit[i]:

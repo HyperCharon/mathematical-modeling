@@ -69,6 +69,8 @@ class TimeSeriesDecompose:
         data = self.data
         n = len(data)
         p = self.period
+        if p > n:
+            raise ValueError(f"季节周期 ({p}) 不能大于数据长度 ({n})")
 
         # Step 1: 趋势 (中心化移动平均)
         if self.model == "additive":

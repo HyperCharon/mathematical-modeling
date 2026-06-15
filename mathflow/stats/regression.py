@@ -105,7 +105,10 @@ class MultiRegression:
         adj_r2 = 1 - (1 - r2) * (n - 1) / df_res if df_res > 0 else 0
 
         MSE = SSE / df_res if df_res > 0 else 0
-        var_beta = MSE * np.linalg.inv(XtX)
+        try:
+            var_beta = MSE * np.linalg.inv(XtX)
+        except np.linalg.LinAlgError:
+            var_beta = MSE * np.linalg.pinv(XtX)
         std_errors = np.sqrt(np.diag(var_beta))
 
         t_values = beta / std_errors

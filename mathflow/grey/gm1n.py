@@ -70,7 +70,7 @@ class GM1N:
             if j != self.target_var:
                 B[:, j] = X1[1:, j]
             else:
-                B[:, j] = X1[1:, j]
+                B[:, j] = 0  # Target variable excluded from driving forces
 
         Y = X[1:, self.target_var]
 
@@ -129,7 +129,7 @@ class GM1N:
         X1_last = self.X[:, self.target_var].sum()
 
         for k in range(n):
-            sum_bx = sum(b[j] * X_future[k, j+1] for j in range(len(b)))
+            sum_bx = sum(b[j] * X_future[k, j] for j in range(len(b)))  # j not j+1
             X1_new = (X1_last - sum_bx / a) * np.exp(-a * (k + 1)) + sum_bx / a
             predictions[k] = X1_new - X1_last
             X1_last = X1_new

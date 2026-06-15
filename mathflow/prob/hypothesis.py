@@ -38,7 +38,7 @@ class HypothesisTest:
         """单样本 t 检验: H0: μ = μ0."""
         data = np.asarray(data, dtype=float)
         t_stat, p_value = stats.ttest_1samp(data, mu0)
-        significant = p_value < self.alpha
+        significant = bool(p_value < self.alpha)
         conclusion = f"拒绝H0，均值显著{'不' if not significant else ''}等于{mu0}"
 
         return TestResult(
@@ -51,7 +51,7 @@ class HypothesisTest:
         data1 = np.asarray(data1, dtype=float)
         data2 = np.asarray(data2, dtype=float)
         t_stat, p_value = stats.ttest_ind(data1, data2, equal_var=equal_var)
-        significant = p_value < self.alpha
+        significant = bool(p_value < self.alpha)
         conclusion = f"拒绝H0，两组均值{'有' if significant else '无'}显著差异"
 
         return TestResult(
@@ -64,7 +64,7 @@ class HypothesisTest:
         data1 = np.asarray(data1, dtype=float)
         data2 = np.asarray(data2, dtype=float)
         t_stat, p_value = stats.ttest_rel(data1, data2)
-        significant = p_value < self.alpha
+        significant = bool(p_value < self.alpha)
         conclusion = f"拒绝H0，配对数据均值{'有' if significant else '无'}显著差异"
 
         return TestResult(
@@ -81,7 +81,7 @@ class HypothesisTest:
         if not np.isscalar(p_value):
             p_value = p_value.min()
             chi2 = chi2.min()
-        significant = p_value < self.alpha
+        significant = bool(p_value < self.alpha)
         conclusion = f"拒绝H0，观测频数与期望频数{'有' if significant else '无'}显著差异"
 
         return TestResult(
@@ -106,7 +106,7 @@ class HypothesisTest:
         else:
             raise ValueError(f"未知方法: {method}")
 
-        significant = p_value < self.alpha
+        significant = bool(p_value < self.alpha)
         conclusion = f"{'拒绝' if significant else '不拒绝'}H0，数据{'不' if significant else ''}服从正态分布"
 
         return TestResult(
@@ -118,7 +118,7 @@ class HypothesisTest:
         """Levene 方差齐性检验."""
         groups = [np.asarray(g, dtype=float) for g in groups]
         stat, p_value = stats.levene(*groups)
-        significant = p_value < self.alpha
+        significant = bool(p_value < self.alpha)
         conclusion = f"拒绝H0，各组方差{'不' if not significant else ''}齐性"
 
         return TestResult(
@@ -131,7 +131,7 @@ class HypothesisTest:
         data1 = np.asarray(data1, dtype=float)
         data2 = np.asarray(data2, dtype=float)
         stat, p_value = stats.mannwhitneyu(data1, data2, alternative="two-sided")
-        significant = p_value < self.alpha
+        significant = bool(p_value < self.alpha)
         conclusion = f"拒绝H0，两组数据分布{'有' if significant else '无'}显著差异"
 
         return TestResult(

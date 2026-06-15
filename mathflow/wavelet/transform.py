@@ -53,17 +53,21 @@ class WaveletTransform:
             分解层数
         """
         coeffs = []
+        lengths = []
         data = self.signal.copy()
 
         for _ in range(level):
+            lengths.append(len(data))
             cA, cD = self._dwt_step(data)
             coeffs.append(cD)
             data = cA
 
         coeffs.append(data)  # 最后一层近似系数
         coeffs.reverse()  # [cA_n, cD_n, cD_{n-1}, ..., cD_1]
+        lengths.reverse()
 
         self._result = WaveletResult(coeffs=coeffs, level=level, wavelet=self.wavelet)
+        self._lengths = lengths
         return self._result
 
     def _dwt_step(self, data):
@@ -98,6 +102,8 @@ class WaveletTransform:
         for i in range(1, len(coeffs)):
             cD = coeffs[i]
             data = self._idwt_step(data, cD)
+            if hasattr(self, '_lengths') and i-1 < len(self._lengths):
+                data = data[:self._lengths[i-1]]  # Truncate to original length
 
         return data[:len(self.signal)]
 

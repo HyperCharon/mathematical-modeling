@@ -146,6 +146,10 @@ class StationarityTest:
             raise RuntimeError("请先调用 test_all()")
         return self._result
 
+    def _ensure_result(self):
+        if self._result is None:
+            raise RuntimeError("请先调用 test_all()")
+
     def summary(self):
         self._ensure_result()
         r = self._result
