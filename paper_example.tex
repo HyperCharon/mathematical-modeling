@@ -1,0 +1,120 @@
+
+\section{问题重述}
+
+
+本题要求根据历史种植数据和市场信息，制定最优的农作物种植策略，以最大化预期收益并控制风险。
+
+
+\section{模型建立}
+
+
+\subsection{基于 AHP 的指标权重确定}
+
+
+采用层次分析法确定各评价指标的主观权重。
+
+
+构造判断矩阵如公式(1)所示：
+
+
+\begin{equation}
+  A = \begin{pmatrix} 1 & 3 & 5 \\ 1/3 & 1 & 3 \\ 1/5 & 1/3 & 1 \end{pmmatrix}
+  \label{eq:ahp_matrix}
+\end{equation}
+
+
+通过层次分析法计算，得到判断矩阵的最大特征值 $\lambda_{\max} = 3.0385$，一致性比率 $CR = 0.0332 < 0.1$，通过一致性检验。
+
+
+\begin{table}[H]
+  \centering
+  \caption{AHP 权重计算结果}
+  \begin{tabular}{lccc}
+    \toprule
+    指标 & $W_{1}$ & $W_{2}$ & $W_{3}$ \\
+    \midrule
+    权重 & 0.6370 & 0.2583 & 0.1047 \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:ahp_weights}
+\end{table}
+
+
+\subsection{TOPSIS 综合评价}
+
+
+\begin{table}[H]
+  \centering
+  \caption{TOPSIS 综合评价结果}
+  \begin{tabular}{lcc}
+    \toprule
+    方案 & 综合得分 & 排名 \\
+    \midrule
+    方案C & 0.8900 & 1 \\
+    方案A & 0.6810 & 2 \\
+    方案B & 0.0000 & 3 \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:topsis}
+\end{table}
+
+
+\subsection{关键公式}
+
+
+SIR 传染病模型的基本方程组为：
+
+
+\begin{equation}
+\begin{cases}
+  \frac{dS}{dt} = -\beta S I \\
+  \frac{dI}{dt} = \beta S I - \gamma I \\
+  \frac{dR}{dt} = \gamma I
+\end{cases}
+  \label{eq:sir}
+\end{equation}
+
+
+模型的决定系数计算如公式所示：
+
+
+\begin{equation}
+  R^2 = 1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}{\sum_{i=1}^{n}(y_i - \bar{y})^2}
+  \label{eq:r2}
+\end{equation}
+
+
+\subsection{模型优点}
+
+
+\begin{itemize}
+  \item 综合考虑了主观和客观权重
+  \item TOPSIS 方法计算简便，物理含义明确
+  \item 灵敏度分析验证了模型的鲁棒性
+\end{itemize}
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+\title{2024年C题 农作物种植策略研究}
+\author{MathFlow Team}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\end{document}
