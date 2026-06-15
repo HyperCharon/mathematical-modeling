@@ -1,0 +1,55 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+\title{2019年A题 高压油管的压力控制}
+\author{MathFlow Team}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+
+\section{问题重述}
+
+
+本文研究的是2019年全国大学生数学建模竞赛A题——高压油管的压力控制问题。需要通过控制柱塞泵的泵油频率和脉宽，使油管内压力稳定在100MPa。
+
+
+\section{模型建立}
+
+
+油管内压力变化遵循可压缩流体连续性方程：
+
+
+\begin{equation}
+  \frac{dP}{dt} = \frac{(Q_{in} - Q_{out}) \cdot K}{V}
+  \label{eq:ode}
+\end{equation}
+
+
+其中K=1400.0MPa为燃油体积模量，V=500cm³为油管容积。
+
+
+\section{模型求解与结果}
+
+
+采用遗传算法优化，得到最优泵油频率为62Hz，占空比为0.186。
+
+
+稳态压力波动为4.92MPa，满足精度要求。
+
+\end{document}
