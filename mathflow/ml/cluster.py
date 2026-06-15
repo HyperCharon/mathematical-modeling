@@ -202,6 +202,39 @@ class ClusterAnalysis:
         plt.tight_layout()
         return fig
 
+    def evaluate_external(self, true_labels):
+        """
+        外部评估: 与真实标签对比.
+
+        Parameters
+        ----------
+        true_labels : array-like
+            真实标签
+
+        Returns
+        -------
+        dict
+            ARI (调整兰德指数), NMI (标准化互信息), AMI (调整互信息)
+        """
+        from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score, adjusted_mutual_info_score
+
+        self._ensure_fitted()
+        pred = self._result.labels
+
+        # 排除噪声点
+        mask = pred >= 0
+        if mask.sum() == 0:
+            return {"ARI": 0, "NMI": 0, "AMI": 0}
+
+        true = np.asarray(true_labels)[mask]
+        pred_clean = pred[mask]
+
+        ari = adjusted_rand_score(true, pred_clean)
+        nmi = normalized_mutual_info_score(true, pred_clean)
+        ami = adjusted_mutual_info_score(true, pred_clean)
+
+        return {"ARI": ari, "NMI": nmi, "AMI": ami}
+
     def _ensure_fitted(self):
         if self._result is None:
             raise RuntimeError("请先调用 fit()")

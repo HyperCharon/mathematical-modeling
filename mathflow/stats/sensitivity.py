@@ -232,12 +232,21 @@ class SensitivityAnalysis:
             raise RuntimeError("请先调用分析方法")
         return self._result
 
-    def plot(self, figsize=(10, 6)):
-        """绘制灵敏度分析结果."""
+    def plot(self, figsize=(10, 6), style="bar"):
+        """绘制灵敏度分析结果.
+
+        Parameters
+        ----------
+        style : str
+            "bar" (柱状图) 或 "tornado" (龙卷风图)
+        """
         import matplotlib.pyplot as plt
 
         r = self._result
         n = len(r.sensitivities)
+
+        if style == "tornado":
+            return self._plot_tornado(figsize)
 
         fig, ax = plt.subplots(figsize=figsize)
         colors = plt.cm.YlOrRd(np.linspace(0.3, 0.9, n))
@@ -253,6 +262,51 @@ class SensitivityAnalysis:
         for bar, val in zip(bars, r.sensitivities[order]):
             ax.text(bar.get_width() + 0.001, bar.get_y() + bar.get_height() / 2,
                     f"{val:.4f}", va="center", fontsize=10)
+
+        plt.tight_layout()
+        return fig
+
+    def _plot_tornado(self, figsize=(10, 6)):
+        """绘制龙卷风图."""
+        import matplotlib.pyplot as plt
+
+        r = self._result
+        if r.method != "OAT (单因素)":
+            raise ValueError("龙卷风图仅支持 OAT 方法")
+
+        detail = r.detail
+        n = len(r.var_names)
+
+        # 计算每个参数的变化范围
+        effects = []
+        for i in range(n):
+            outputs = detail["param_outputs"][r.var_names[i]][1]
+            base = r.base_output
+            low_effect = outputs.min() - base
+            high_effect = outputs.max() - base
+            effects.append((r.var_names[i], low_effect, high_effect))
+
+        # 按影响范围排序
+        effects.sort(key=lambda x: abs(x[2] - x[1]), reverse=True)
+
+        fig, ax = plt.subplots(figsize=figsize)
+        y_pos = range(n)
+
+        for i, (name, low, high) in enumerate(effects):
+            ax.barh(i, high, left=0, color="#e74c3c", alpha=0.7, height=0.6)
+            ax.barh(i, low, left=0, color="#3498db", alpha=0.7, height=0.6)
+
+        ax.set_yticks(y_pos)
+        ax.set_yticklabels([e[0] for e in effects])
+        ax.set_xlabel("对目标函数的影响")
+        ax.set_title("龙卷风图 (灵敏度分析)")
+        ax.axvline(x=0, color="black", linewidth=1)
+        ax.invert_yaxis()
+
+        # 图例
+        from matplotlib.patches import Patch
+        ax.legend([Patch(color="#e74c3c", alpha=0.7), Patch(color="#3498db", alpha=0.7)],
+                  ["正向影响", "负向影响"], loc="lower right")
 
         plt.tight_layout()
         return fig
