@@ -2,3 +2,4 @@
 
 from mathflow.ml.cluster import ClusterAnalysis
 from mathflow.ml.dimension import DimensionReduction
+from mathflow.ml.classifier import Classifier
