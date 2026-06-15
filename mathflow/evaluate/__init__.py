@@ -1,0 +1,9 @@
+"""评价类模型: AHP, TOPSIS, 熵权法, CRITIC, 灰色关联, 模糊综合评价."""
+
+from mathflow.evaluate.ahp import AHP
+from mathflow.evaluate.topsis import TOPSIS
+from mathflow.evaluate.entropy_weight import EntropyWeight
+from mathflow.evaluate.critic import CRITIC
+from mathflow.evaluate.gra import GreyRelationalAnalysis
+from mathflow.evaluate.fuzzy_eval import FuzzyEvaluation
+from mathflow.evaluate.rsr import RSR
