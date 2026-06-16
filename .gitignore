@@ -38,3 +38,4 @@ ENV/
 *~
 .DS_Store
 examples/*.png
+*.png
