@@ -51,6 +51,8 @@ class ARIMAModel:
         if not HAS_STATSMODELS:
             raise ImportError("ARIMA 需要安装 statsmodels: pip install statsmodels")
         self.data = np.asarray(data, dtype=float).flatten()
+        if len(self.data) < 10:
+            raise ValueError(f"ARIMA 至少需要 10 个数据点，当前只有 {len(self.data)} 个")
         self._model = None
         self._result = None
         self._order = None

@@ -86,7 +86,13 @@ class GM1N:
         for k in range(1, n):
             # 简化的数值解
             sum_bx = sum(b[j-1] * X1[k-1, j] for j in range(1, m) if j != self.target_var)
-            X1_hat[k, self.target_var] = (X1[0, self.target_var] - sum_bx / a) * np.exp(-a * k) + sum_bx / a
+            if abs(a) < 1e-10:
+                # a 接近零时使用线性近似
+                X1_hat[k, self.target_var] = X1[0, self.target_var] + sum_bx * k
+            else:
+                # 防止指数溢出
+                exp_term = np.clip(-a * k, -500, 500)
+                X1_hat[k, self.target_var] = (X1[0, self.target_var] - sum_bx / a) * np.exp(exp_term) + sum_bx / a
 
         # Step 6: 累减还原
         X0_hat = np.zeros_like(X)
@@ -130,7 +136,11 @@ class GM1N:
 
         for k in range(n):
             sum_bx = sum(b[j] * X_future[k, j] for j in range(len(b)))  # j not j+1
-            X1_new = (X1_last - sum_bx / a) * np.exp(-a * (k + 1)) + sum_bx / a
+            if abs(a) < 1e-10:
+                X1_new = X1_last + sum_bx
+            else:
+                exp_term = np.clip(-a * (k + 1), -500, 500)
+                X1_new = (X1_last - sum_bx / a) * np.exp(exp_term) + sum_bx / a
             predictions[k] = X1_new - X1_last
             X1_last = X1_new
 

@@ -85,11 +85,20 @@ class DataCleaner:
         if method == "minmax":
             mins = numeric.min()
             maxs = numeric.max()
-            result[numeric.columns] = (numeric - mins) / (maxs - mins)
+            ranges = maxs - mins
+            # 对常数列（范围为0）返回0
+            ranges = ranges.replace(0, 1)
+            result[numeric.columns] = (numeric - mins) / ranges
         elif method == "zscore":
-            result[numeric.columns] = (numeric - numeric.mean()) / numeric.std()
+            stds = numeric.std()
+            # 对常数列（标准差为0）返回0
+            stds = stds.replace(0, 1)
+            result[numeric.columns] = (numeric - numeric.mean()) / stds
         elif method == "maxabs":
-            result[numeric.columns] = numeric / numeric.abs().max()
+            max_abs = numeric.abs().max()
+            # 对全零列返回0
+            max_abs = max_abs.replace(0, 1)
+            result[numeric.columns] = numeric / max_abs
         else:
             raise ValueError(f"未知方法: {method}")
 

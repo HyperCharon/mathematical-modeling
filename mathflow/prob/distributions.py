@@ -52,6 +52,11 @@ class DistributionFitter:
     def __init__(self, data):
         self.data = np.asarray(data, dtype=float).flatten()
         self.n = len(self.data)
+        if self.n < 2:
+            raise ValueError("分布拟合至少需要 2 个数据点")
+        if np.all(self.data == self.data[0]):
+            import warnings
+            warnings.warn("数据为常数，分布拟合结果可能无意义")
         self._results = []
 
     def fit(self, dist_name: str) -> FitResult:
@@ -70,8 +75,13 @@ class DistributionFitter:
         try:
             log_lik = np.sum(dist.logpdf(self.data, *params))
             k = len(params)
-            aic = 2 * k - 2 * log_lik
-            bic = k * np.log(self.n) - 2 * log_lik
+            # 检查 log_lik 是否有效
+            if not np.isfinite(log_lik):
+                aic = float("inf")
+                bic = float("inf")
+            else:
+                aic = 2 * k - 2 * log_lik
+                bic = k * np.log(self.n) - 2 * log_lik
         except Exception:
             aic = float("inf")
             bic = float("inf")
@@ -89,7 +99,9 @@ class DistributionFitter:
         for name, dist, cn_name in self.DISTRIBUTIONS:
             try:
                 result = self.fit(name)
-                results.append(result)
+                # 过滤掉无效的 AIC/BIC 值
+                if np.isfinite(result.aic) and np.isfinite(result.bic):
+                    results.append(result)
             except Exception:
                 continue
 

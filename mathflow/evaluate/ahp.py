@@ -76,13 +76,24 @@ class AHP:
         matrix = np.asarray(matrix, dtype=float)
         if matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1]:
             raise ValueError(f"判断矩阵必须是方阵，当前形状: {matrix.shape}")
+
+        # 验证矩阵元素为正数
+        if np.any(matrix <= 0):
+            raise ValueError("判断矩阵的所有元素必须为正数")
+
         n = matrix.shape[0]
         # 验证互反性 (允许小误差)
+        reciprocity_warnings = []
         for i in range(n):
-            for j in range(n):
-                if matrix[i, j] * matrix[j, i] < 0.99 or matrix[i, j] * matrix[j, i] > 1.01:
-                    if i != j:
-                        pass  # 宽松处理，实际比赛数据常有小误差
+            for j in range(i + 1, n):
+                product = matrix[i, j] * matrix[j, i]
+                if abs(product - 1.0) > 0.01:
+                    reciprocity_warnings.append(f"({i},{j}): {matrix[i,j]:.4f} * {matrix[j,i]:.4f} = {product:.4f}")
+
+        if reciprocity_warnings:
+            import warnings
+            warnings.warn(f"判断矩阵互反性存在误差:\n" + "\n".join(reciprocity_warnings[:3]))
+
         self._matrix = matrix
         self._result = None
         return self
@@ -96,9 +107,14 @@ class AHP:
         comparisons : list of (i, j, value)
             i 相对于 j 的重要程度，例如 (0, 1, 3) 表示第0个比第1个重要程度为3
         """
+        if not comparisons:
+            raise ValueError("comparisons 不能为空")
+
         n = max(max(i, j) for i, j, _ in comparisons) + 1
         matrix = np.ones((n, n))
         for i, j, v in comparisons:
+            if v <= 0:
+                raise ValueError(f"比较值必须为正数，got ({i}, {j}, {v})")
             matrix[i, j] = v
             matrix[j, i] = 1.0 / v
         return self.set_matrix(matrix)

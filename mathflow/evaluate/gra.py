@@ -60,8 +60,19 @@ class GreyRelationalAnalysis:
         rho = self.rho
 
         # Step 1: 无量纲化 (初值化)
-        ref_norm = ref / ref[0] if ref[0] != 0 else ref
-        comp_norm = comp / comp[:, 0:1]
+        epsilon = 1e-10
+        if abs(ref[0]) < epsilon:
+            import warnings
+            warnings.warn("参考序列首值为零，初值化可能无意义")
+            ref_norm = ref
+        else:
+            ref_norm = ref / ref[0]
+
+        # 对比较序列初值化，防止除零
+        first_vals = comp[:, 0:1]
+        comp_norm = np.where(np.abs(first_vals) > epsilon,
+                            comp / first_vals,
+                            comp)
         comp_norm = np.where(np.isfinite(comp_norm), comp_norm, 0)
 
         # Step 2: 计算差序列

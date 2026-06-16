@@ -125,7 +125,15 @@ class CurveFitter:
             raise RuntimeError(f"拟合失败: {e}")
 
         y_hat = func(self.x, *popt)
-        r2 = 1 - np.sum((self.y - y_hat)**2) / np.sum((self.y - self.y.mean())**2)
+        ss_res = np.sum((self.y - y_hat)**2)
+        ss_tot = np.sum((self.y - self.y.mean())**2)
+
+        if ss_tot < 1e-10:
+            # 常数数据，R2 无意义
+            r2 = 0.0
+        else:
+            r2 = 1 - ss_res / ss_tot
+
         rmse = np.sqrt(np.mean((self.y - y_hat)**2))
 
         if r2 < -1:

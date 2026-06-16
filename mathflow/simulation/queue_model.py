@@ -33,6 +33,16 @@ class QueueModel:
     """
 
     def __init__(self, arrival_rate, service_rate, n_servers=1, capacity=None):
+        # 验证参数有效性
+        if arrival_rate <= 0:
+            raise ValueError(f"到达率必须为正数，got {arrival_rate}")
+        if service_rate <= 0:
+            raise ValueError(f"服务率必须为正数，got {service_rate}")
+        if not isinstance(n_servers, int) or n_servers < 1:
+            raise ValueError(f"服务器数量必须是正整数，got {n_servers}")
+        if capacity is not None and (not isinstance(capacity, int) or capacity < 1):
+            raise ValueError(f"系统容量必须是正整数，got {capacity}")
+
         self.lambda_ = arrival_rate
         self.mu = service_rate
         self.c = n_servers

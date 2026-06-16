@@ -825,8 +825,11 @@ try:
     forecast = short_arima.predict(steps=2)
     print(f"  ARIMA 5-point: order={short_arima.order}, forecast={forecast}")
     print("  ARIMA 5-point auto_fit: OK")
+except ValueError as e:
+    # 正确的边界检查行为：数据点不足应该抛出 ValueError
+    print(f"  ARIMA 5-point: raised ValueError (correct validation)")
 except Exception as e:
-    report("predict.ARIMAModel", "auto_fit", f"5-point data raised: {type(e).__name__}: {e}", "medium")
+    report("predict.ARIMAModel", "auto_fit", f"5-point data raised unexpected: {type(e).__name__}: {e}", "medium")
 
 # Edge 5: MultiRegression with more features than samples (p > n)
 try:
@@ -1004,8 +1007,11 @@ try:
         report("timeseries.TimeSeriesDecompose", "decompose", "NaN in trend when period > data length", "high")
     else:
         print("  TimeSeriesDecompose period>len: OK")
+except ValueError as e:
+    # 正确的边界检查行为：period > len 应该抛出 ValueError
+    print(f"  TimeSeriesDecompose period>len: raised ValueError (correct validation)")
 except Exception as e:
-    report("timeseries.TimeSeriesDecompose", "decompose", f"period>len raised: {type(e).__name__}: {e}", "high")
+    report("timeseries.TimeSeriesDecompose", "decompose", f"period>len raised unexpected: {type(e).__name__}: {e}", "high")
 
 # Edge 17: TimeSeriesDecompose with period=1 (no seasonality)
 try:

@@ -100,7 +100,9 @@ class TimeSeriesDecompose:
         if self.model == "additive":
             detrended = data - trend
         else:
-            detrended = data / np.where(trend != 0, trend, 1)
+            # 乘法模型：防止除零，用 epsilon 保护
+            epsilon = 1e-10
+            detrended = data / np.where(np.abs(trend) > epsilon, trend, np.sign(trend) * epsilon)
 
         # Step 3: 季节性 (同期平均)
         seasonal = np.zeros(n)
@@ -113,7 +115,11 @@ class TimeSeriesDecompose:
         if self.model == "additive":
             seasonal_means -= seasonal_means.mean()
         else:
-            seasonal_means /= seasonal_means.mean()
+            mean_val = seasonal_means.mean()
+            if abs(mean_val) < 1e-10:
+                seasonal_means = np.ones_like(seasonal_means)
+            else:
+                seasonal_means /= mean_val
 
         for i in range(n):
             seasonal[i] = seasonal_means[i % p]
@@ -122,7 +128,10 @@ class TimeSeriesDecompose:
         if self.model == "additive":
             residual = data - trend - seasonal
         else:
-            residual = data / (trend * seasonal)
+            # 乘法模型：防止除零
+            product = trend * seasonal
+            epsilon = 1e-10
+            residual = data / np.where(np.abs(product) > epsilon, product, np.sign(product) * epsilon)
 
         self._result = DecomposeResult(
             trend=trend, seasonal=seasonal, residual=residual,
@@ -135,6 +144,8 @@ class TimeSeriesDecompose:
         data = self.data
         n = len(data)
         p = self.period
+        if p > n:
+            raise ValueError(f"季节周期 ({p}) 不能大于数据长度 ({n})")
 
         # 初始趋势估计
         trend = self._lowess_smooth(data, window=p + 1)

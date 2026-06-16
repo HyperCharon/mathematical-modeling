@@ -46,6 +46,10 @@ class GreyPrediction:
         self.data = np.asarray(data, dtype=float).flatten()
         if len(self.data) < 4:
             raise ValueError("GM(1,1) 至少需要 4 个数据点")
+        # 验证数据非负
+        if np.any(self.data < 0):
+            import warnings
+            warnings.warn("GM(1,1) 要求原始数据非负，负值可能导致预测结果不准确")
         self._result = None
 
     def fit(self):

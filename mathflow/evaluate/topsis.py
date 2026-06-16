@@ -59,12 +59,35 @@ class TOPSIS:
         if weights is None:
             weights = np.ones(n_indicators) / n_indicators
         self.weights = np.asarray(weights, dtype=float)
-        self.weights = self.weights / self.weights.sum()  # 归一化
+
+        # 验证权重长度
+        if len(self.weights) != n_indicators:
+            raise ValueError(f"weights 长度 ({len(self.weights)}) 必须等于指标数 ({n_indicators})")
+
+        # 验证权重非负
+        if np.any(self.weights < 0):
+            raise ValueError("weights 不能包含负值")
+
+        weights_sum = self.weights.sum()
+        if weights_sum < 1e-10:
+            raise ValueError("weights 之和不能为零")
+        self.weights = self.weights / weights_sum  # 归一化
 
         # 指标类型
         if types is None:
             types = [1] * n_indicators
         self.types = np.asarray(types)
+
+        # 验证类型长度
+        if len(self.types) != n_indicators:
+            raise ValueError(f"types 长度 ({len(self.types)}) 必须等于指标数 ({n_indicators})")
+
+        # 验证类型值
+        valid_types = {1, -1}
+        invalid = set(self.types) - valid_types
+        if invalid:
+            raise ValueError(f"types 只能包含 1 (效益型) 或 -1 (成本型)，got {invalid}")
+
         self._result = None
 
     def fit(self):

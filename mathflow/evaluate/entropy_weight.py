@@ -47,12 +47,26 @@ class EntropyWeight:
         if self.data.ndim != 2:
             raise ValueError("data 必须是二维矩阵")
         self.types = types
+
+        # 验证 types 长度
+        if types is not None:
+            if len(types) != self.data.shape[1]:
+                raise ValueError(f"types 长度 ({len(types)}) 必须等于指标数 ({self.data.shape[1]})")
+            valid_types = {1, -1}
+            invalid = set(types) - valid_types
+            if invalid:
+                raise ValueError(f"types 只能包含 1 (效益型) 或 -1 (成本型)，got {invalid}")
+
         self._result = None
 
     def fit(self):
         """计算熵权."""
         data = self.data.copy()
         n, m = data.shape
+
+        # 验证样本量
+        if n < 2:
+            raise ValueError("熵权法至少需要 2 个样本")
 
         # Step 1: 指标正向化 (成本型取倒数)
         if self.types is not None:

@@ -51,6 +51,16 @@ class PSO:
                  bounds: List[Tuple[float, float]],
                  n_particles: int = 50, max_iter: int = 200,
                  w: float = 0.7, c1: float = 1.5, c2: float = 1.5):
+        # 验证 fitness_func 可调用
+        if not callable(fitness_func):
+            raise TypeError(f"fitness_func 必须是可调用对象，got {type(fitness_func).__name__}")
+
+        # 验证参数
+        if not isinstance(n_vars, int) or n_vars < 1:
+            raise ValueError(f"n_vars 必须是正整数，got {n_vars}")
+        if len(bounds) != n_vars:
+            raise ValueError(f"bounds 长度 ({len(bounds)}) 必须等于 n_vars ({n_vars})")
+
         self.fitness_func = fitness_func
         self.n_vars = n_vars
         self.bounds = np.array(bounds)
@@ -91,6 +101,9 @@ class PSO:
         history = {"best": [], "mean": []}
         conv_gen = 0
 
+        # 计算最大速度限制 (Vmax = 20% * 搜索空间宽度)
+        v_max = 0.2 * (self.bounds[:, 1] - self.bounds[:, 0])
+
         for it in range(self.max_iter):
             # 自适应惯性权重 (线性递减)
             w = self.w - (self.w - 0.4) * it / self.max_iter
@@ -101,6 +114,9 @@ class PSO:
                 vel[i] = (w * vel[i] +
                           self.c1 * r1 * (p_best_pos[i] - pos[i]) +
                           self.c2 * r2 * (g_best_pos - pos[i]))
+
+                # 速度限制，防止发散
+                vel[i] = np.clip(vel[i], -v_max, v_max)
 
                 # 更新位置
                 pos[i] += vel[i]

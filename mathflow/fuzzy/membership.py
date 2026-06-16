@@ -50,6 +50,11 @@ class MembershipFunction:
     def gaussian(x, mean, sigma):
         """高斯型隶属函数."""
         x = np.asarray(x, dtype=float)
+        if abs(sigma) < 1e-10:
+            # sigma=0 时退化为脉冲函数
+            result = np.zeros_like(x)
+            result[np.abs(x - mean) < 1e-10] = 1.0
+            return result
         return np.exp(-0.5 * ((x - mean) / sigma) ** 2)
 
     @staticmethod
@@ -63,6 +68,10 @@ class MembershipFunction:
         """Z型隶属函数."""
         x = np.asarray(x, dtype=float)
         result = np.ones_like(x)
+        if abs(b - a) < 1e-10:
+            # a==b 时退化为阶跃函数
+            result[x > a] = 0
+            return result
         mask1 = (x >= a) & (x <= (a + b) / 2)
         mask2 = (x > (a + b) / 2) & (x <= b)
         result[mask1] = 1 - 2 * ((x[mask1] - a) / (b - a)) ** 2
@@ -75,6 +84,10 @@ class MembershipFunction:
         """S型隶属函数."""
         x = np.asarray(x, dtype=float)
         result = np.zeros_like(x)
+        if abs(b - a) < 1e-10:
+            # a==b 时退化为阶跃函数
+            result[x >= a] = 1
+            return result
         mask1 = (x >= a) & (x <= (a + b) / 2)
         mask2 = (x > (a + b) / 2) & (x <= b)
         result[mask1] = 2 * ((x[mask1] - a) / (b - a)) ** 2

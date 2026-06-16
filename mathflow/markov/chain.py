@@ -40,17 +40,35 @@ class MarkovChain:
 
     def __init__(self, P, states=None):
         self.P = np.asarray(P, dtype=float)
-        n = self.P.shape[0]
+
+        # 验证维度
+        if self.P.ndim != 2:
+            raise ValueError(f"转移矩阵必须是二维的，got {self.P.ndim}D")
+
+        n, m = self.P.shape
+        if n != m:
+            raise ValueError(f"转移矩阵必须是方阵，got shape ({n}, {m})")
+
+        # 验证非负性
+        if np.any(self.P < 0):
+            raise ValueError("转移矩阵的所有元素必须非负")
+
         self.n_states = n
         self.states = states or [f"状态{i+1}" for i in range(n)]
 
-        # 验证转移矩阵
+        # 验证 states 长度
+        if states is not None and len(states) != n:
+            raise ValueError(f"states 长度 ({len(states)}) 必须等于状态数 ({n})")
+
+        # 验证转移矩阵行和为1
         row_sums = self.P.sum(axis=1)
         if not np.allclose(row_sums, 1):
             raise ValueError("转移矩阵每行之和必须为1")
 
     def n_step_transition(self, n: int) -> np.ndarray:
         """计算n步转移矩阵."""
+        if not isinstance(n, int) or n < 1:
+            raise ValueError(f"n 必须是正整数，got {n}")
         return np.linalg.matrix_power(self.P, n)
 
     def steady_state(self) -> np.ndarray:
@@ -64,7 +82,11 @@ class MarkovChain:
         try:
             pi = np.linalg.solve(A, b)
             pi = np.maximum(pi, 0)
-            pi = pi / pi.sum()
+            pi_sum = pi.sum()
+            if pi_sum < 1e-10:
+                pi = np.ones(n) / n
+            else:
+                pi = pi / pi_sum
         except np.linalg.LinAlgError:
             pi = np.ones(n) / n
 
@@ -73,6 +95,11 @@ class MarkovChain:
 
     def simulate(self, n_steps: int = 100, start: int = 0, seed: int = 42) -> List[int]:
         """模拟马尔可夫链."""
+        if not isinstance(n_steps, int) or n_steps < 1:
+            raise ValueError(f"n_steps 必须是正整数，got {n_steps}")
+        if not (0 <= start < self.n_states):
+            raise ValueError(f"start 必须在 [0, {self.n_states}) 范围内，got {start}")
+
         np.random.seed(seed)
         states = [start]
         current = start
@@ -86,6 +113,11 @@ class MarkovChain:
 
     def absorption_probability(self, absorbing_states: List[int]) -> np.ndarray:
         """计算吸收概率 (适用于吸收马尔可夫链)."""
+        # 验证 absorbing_states
+        for s in absorbing_states:
+            if not (0 <= s < self.n_states):
+                raise ValueError(f"吸收态索引 {s} 超出范围 [0, {self.n_states})")
+
         n = self.n_states
         non_absorbing = [i for i in range(n) if i not in absorbing_states]
         k = len(non_absorbing)

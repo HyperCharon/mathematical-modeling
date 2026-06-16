@@ -60,7 +60,18 @@ class MultiRegression:
         if self.X.ndim == 1:
             self.X = self.X.reshape(-1, 1)
         self.y = np.asarray(y, dtype=float)
+
+        # 检查 NaN/inf 值
+        if np.any(np.isnan(self.X)) or np.any(np.isinf(self.X)):
+            raise ValueError("自变量 X 中包含 NaN 或 inf 值，请先清洗数据")
+        if np.any(np.isnan(self.y)) or np.any(np.isinf(self.y)):
+            raise ValueError("因变量 y 中包含 NaN 或 inf 值，请先清洗数据")
+
         self.n, self.p = self.X.shape
+        if self.n < self.p + 1:
+            import warnings
+            warnings.warn(f"样本量 ({self.n}) 小于自变量数+1 ({self.p + 1})，可能导致过拟合")
+
         self.add_constant = add_constant
 
         if var_names is None:
@@ -80,13 +91,25 @@ class MultiRegression:
         else:
             X_design = X.copy()
 
-        # 最小二乘法
-        XtX = X_design.T @ X_design
-        Xty = X_design.T @ y
+        # 使用 SVD 分解提高数值稳定性（处理多重共线性）
         try:
-            beta = np.linalg.solve(XtX, Xty)
+            U, s, Vt = np.linalg.svd(X_design, full_matrices=False)
+            # 检查条件数
+            condition_number = s[0] / s[-1] if s[-1] > 1e-10 else float('inf')
+            if condition_number > 1e12:
+                import warnings
+                warnings.warn(f"矩阵条件数过大 ({condition_number:.2e})，可能存在多重共线性")
+
+            # 使用 SVD 求解最小二乘
+            beta = Vt.T @ (U.T @ y / s)
         except np.linalg.LinAlgError:
-            beta = np.linalg.lstsq(XtX, Xty, rcond=None)[0]
+            # Fallback 到正规方程
+            XtX = X_design.T @ X_design
+            Xty = X_design.T @ y
+            try:
+                beta = np.linalg.solve(XtX, Xty)
+            except np.linalg.LinAlgError:
+                beta = np.linalg.lstsq(XtX, Xty, rcond=None)[0]
 
         # 拟合值和残差
         y_hat = X_design @ beta
@@ -105,11 +128,20 @@ class MultiRegression:
         adj_r2 = 1 - (1 - r2) * (n - 1) / df_res if df_res > 0 else 0
 
         MSE = SSE / df_res if df_res > 0 else 0
+
+        # 使用 SVD 计算系数方差（更稳定）
         try:
-            var_beta = MSE * np.linalg.inv(XtX)
+            U, s, Vt = np.linalg.svd(X_design, full_matrices=False)
+            # (X'X)^{-1} = V * diag(1/s^2) * V'
+            var_beta = MSE * (Vt.T @ np.diag(1.0 / (s**2 + 1e-10)) @ Vt)
         except np.linalg.LinAlgError:
-            var_beta = MSE * np.linalg.pinv(XtX)
-        std_errors = np.sqrt(np.diag(var_beta))
+            XtX = X_design.T @ X_design
+            try:
+                var_beta = MSE * np.linalg.pinv(XtX)
+            except:
+                var_beta = np.zeros((k, k))
+
+        std_errors = np.sqrt(np.maximum(np.diag(var_beta), 0))
 
         t_values = beta / std_errors
         p_values = 2 * (1 - stats.t.cdf(np.abs(t_values), df_res))
@@ -145,6 +177,11 @@ class MultiRegression:
         X_new = np.asarray(X_new, dtype=float)
         if X_new.ndim == 1:
             X_new = X_new.reshape(1, -1)
+
+        # 验证特征维度
+        if X_new.shape[1] != self.p:
+            raise ValueError(f"预测数据特征数 ({X_new.shape[1]}) 必须等于训练时的特征数 ({self.p})")
+
         if self.add_constant:
             X_design = np.column_stack([np.ones(len(X_new)), X_new])
         else:

@@ -63,6 +63,16 @@ class GeneticAlgorithm:
                  pop_size: int = 100, generations: int = 200,
                  crossover_rate: float = 0.8, mutation_rate: float = 0.1,
                  elitism: int = 2, encoding: str = "real"):
+        # 验证 fitness_func 可调用
+        if not callable(fitness_func):
+            raise TypeError(f"fitness_func 必须是可调用对象，got {type(fitness_func).__name__}")
+
+        # 验证参数
+        if not isinstance(n_vars, int) or n_vars < 1:
+            raise ValueError(f"n_vars 必须是正整数，got {n_vars}")
+        if len(bounds) != n_vars:
+            raise ValueError(f"bounds 长度 ({len(bounds)}) 必须等于 n_vars ({n_vars})")
+
         self.fitness_func = fitness_func
         self.n_vars = n_vars
         self.bounds = np.array(bounds)
@@ -141,6 +151,18 @@ class GeneticAlgorithm:
     def _evaluate(self, pop):
         """评估适应度."""
         fitness = np.array([self.fitness_func(ind) for ind in pop])
+        # 处理 NaN/Inf 值，替换为最差适应度
+        valid_mask = np.isfinite(fitness)
+        if not np.all(valid_mask):
+            n_invalid = np.sum(~valid_mask)
+            if np.any(valid_mask):
+                worst_fitness = np.min(fitness[valid_mask]) - 1
+            else:
+                worst_fitness = -1e10
+            fitness[~valid_mask] = worst_fitness
+            if n_invalid > 0:
+                import warnings
+                warnings.warn(f"检测到 {n_invalid} 个无效适应度值 (NaN/Inf)，已替换为最差值")
         return fitness
 
     def _selection(self, pop, fitness):
