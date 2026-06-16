@@ -312,6 +312,9 @@ class CellularAutomata:
         """绘制结果."""
         import matplotlib.pyplot as plt
         from matplotlib.colors import ListedColormap
+        from mathflow.viz.style import set_paper_style
+
+        set_paper_style()
 
         if self._result is None:
             raise RuntimeError("请先调用 run()")
@@ -323,19 +326,19 @@ class CellularAutomata:
         colors = ["white", "red", "green", "blue", "orange", "purple"]
         cmap = ListedColormap(colors[:self.n_states])
         ax.imshow(self._result.history[-1], cmap=cmap, interpolation="nearest")
-        ax.set_title("最终状态")
-        ax.set_xlabel("列")
-        ax.set_ylabel("行")
+        ax.set_title("Final State")
+        ax.set_xlabel("Column")
+        ax.set_ylabel("Row")
 
         # 右图: 各状态数量变化
         ax = axes[1]
-        state_names = {0: "S (易感)", 1: "I (感染)", 2: "R (恢复)"}
+        state_names = {0: "S (Susceptible)", 1: "I (Infected)", 2: "R (Recovered)"}
         for i in range(self.n_states):
-            name = state_names.get(i, f"状态 {i}")
+            name = state_names.get(i, f"State {i}")
             ax.plot(self._result.stats[f"state_{i}"], label=name)
-        ax.set_xlabel("时间步")
-        ax.set_ylabel("数量")
-        ax.set_title("状态演化")
+        ax.set_xlabel("Time Step")
+        ax.set_ylabel("Count")
+        ax.set_title("State Evolution")
         ax.legend()
         ax.grid(True, alpha=0.3)
 

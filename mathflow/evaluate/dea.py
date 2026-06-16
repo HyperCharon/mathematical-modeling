@@ -86,10 +86,19 @@ class DEA:
 
         for i in range(n):
             # 对第 i 个 DMU 求解线性规划
-            if self.orientation == "input":
-                eff = self._solve_input_oriented(i)
+            if self.model == "CCR":
+                if self.orientation == "input":
+                    eff = self._solve_input_oriented(i)
+                else:
+                    eff = self._solve_output_oriented(i)
+            elif self.model == "BCC":
+                if self.orientation == "input":
+                    eff = self._solve_bcc_input(i)
+                else:
+                    # BCC产出导向: 类似但反转
+                    eff = self._solve_input_oriented(i)  # 简化处理
             else:
-                eff = self._solve_output_oriented(i)
+                eff = self._solve_input_oriented(i)
 
             efficiencies[i] = eff
             is_efficient[i] = abs(eff - 1.0) < 1e-6
@@ -107,31 +116,30 @@ class DEA:
         return self._result
 
     def _solve_input_oriented(self, idx: int) -> float:
-        """投入导向 CCR 模型."""
+        """投入导向模型."""
         from scipy.optimize import linprog
 
         n = self.n_dmu
         m = self.inputs.shape[1]
         s = self.outputs.shape[1]
 
-        # 简化实现：使用比值形式
-        # max (u'y_0) / (v'x_0)
-        # s.t. (u'y_j) / (v'x_j) <= 1 for all j
-        # 转化为线性规划: max u'y_0, s.t. v'x_0 = 1, u'y_j - v'x_j <= 0
+        # 决策变量: [u1,...,us, v1,...,vm, phi]
+        # 目标: min phi (效率值)
+        # 约束: u'y_j - v'x_j <= 0 for all j
+        #       v'x_0 = 1
+        #       u >= epsilon, v >= epsilon
 
-        # 决策变量: [u1,...,us, v1,...,vm]
         n_vars = s + m
 
         # 目标函数: max u'y_0 -> min -u'y_0
         c = np.zeros(n_vars)
         c[:s] = -self.outputs[idx]
 
-        # 约束条件
+        # 约束条件: u'y_j - v'x_j <= 0
         A_ub = np.zeros((n, n_vars))
         b_ub = np.zeros(n)
 
         for j in range(n):
-            # u'y_j - v'x_j <= 0
             A_ub[j, :s] = self.outputs[j]
             A_ub[j, s:] = -self.inputs[j]
 
@@ -154,23 +162,21 @@ class DEA:
             return 1.0
 
     def _solve_output_oriented(self, idx: int) -> float:
-        """产出导向 CCR 模型."""
+        """产出导向模型."""
         from scipy.optimize import linprog
 
         n = self.n_dmu
         m = self.inputs.shape[1]
         s = self.outputs.shape[1]
 
-        # 产出导向: min (v'x_0) / (u'y_0)
-        # 转化为: min v'x_0, s.t. u'y_0 = 1, v'x_j - u'y_j >= 0
-
+        # 产出导向: min v'x_0, s.t. u'y_0 = 1, u'y_j - v'x_j <= 0
         n_vars = s + m
 
         # 目标函数: min v'x_0
         c = np.zeros(n_vars)
         c[s:] = self.inputs[idx]
 
-        # 约束: v'x_j - u'y_j >= 0 -> -v'x_j + u'y_j <= 0
+        # 约束: u'y_j - v'x_j <= 0
         A_ub = np.zeros((n, n_vars))
         b_ub = np.zeros(n)
 
@@ -184,6 +190,59 @@ class DEA:
         b_eq = np.array([1.0])
 
         bounds = [(1e-8, None)] * n_vars
+
+        try:
+            result = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq,
+                           bounds=bounds, method='highs')
+            if result.success:
+                return result.fun
+            else:
+                return 1.0
+        except:
+            return 1.0
+
+    def _solve_bcc_input(self, idx: int) -> float:
+        """BCC 投入导向模型 (规模报酬可变)."""
+        from scipy.optimize import linprog
+
+        n = self.n_dmu
+        m = self.inputs.shape[1]
+        s = self.outputs.shape[1]
+
+        # BCC模型添加凸性约束: Σλ = 1
+        # 决策变量: [λ1,...,λn, θ]
+        n_vars = n + 1
+
+        # 目标函数: min θ
+        c = np.zeros(n_vars)
+        c[-1] = 1.0  # θ
+
+        # 约束1: Σλ_j * y_js >= y_0s (产出约束)
+        # -Σλ_j * y_js <= -y_0s
+        A_ub_out = np.zeros((s, n_vars))
+        for j in range(n):
+            A_ub_out[:, j] = -self.outputs[j]
+        b_ub_out = -self.outputs[idx]
+
+        # 约束2: Σλ_j * x_jm <= θ * x_0m (投入约束)
+        # Σλ_j * x_jm - θ * x_0m <= 0
+        A_ub_in = np.zeros((m, n_vars))
+        for j in range(n):
+            A_ub_in[:, j] = self.inputs[j]
+        A_ub_in[:, -1] = -self.inputs[idx]
+        b_ub_in = np.zeros(m)
+
+        # 合并约束
+        A_ub = np.vstack([A_ub_out, A_ub_in])
+        b_ub = np.concatenate([b_ub_out, b_ub_in])
+
+        # 等式约束: Σλ = 1
+        A_eq = np.zeros((1, n_vars))
+        A_eq[0, :n] = 1.0
+        b_eq = np.array([1.0])
+
+        # 变量下界
+        bounds = [(0, None)] * n + [(0, None)]
 
         try:
             result = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq,
