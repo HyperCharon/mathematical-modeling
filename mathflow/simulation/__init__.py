@@ -2,3 +2,4 @@
 
 from mathflow.simulation.monte_carlo import MonteCarlo
 from mathflow.simulation.queue_model import QueueModel
+from mathflow.simulation.cellular_automata import CellularAutomata

@@ -2,7 +2,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-194%20passed-brightgreen.svg)](#测试)
+[![Tests](https://img.shields.io/badge/Tests-214%20passed-brightgreen.svg)](#测试)
 [![Coverage](https://img.shields.io/badge/真题验证-12%20道-orange.svg)]#真题实战验证)
 
 > 一站式 Python 工具库，覆盖数学建模竞赛中的 **评价、预测、优化、图论、仿真、ODE、统计、ML、博弈论、动态规划、时间序列、模糊逻辑、马尔可夫、灰色系统、小波分析、论文写作** 全链路。
@@ -13,12 +13,12 @@
 
 ## ✨ 核心特性
 
-- **📦 25 个模块，85+ 算法** — 覆盖数模国赛 95% 以上的题型
+- **📦 29 个模块，95+ 算法** — 覆盖数模国赛 95% 以上的题型
 - **🎯 统一 API** — 所有模型遵循 `创建 → fit() → 结果` 的一致接口
 - **📊 内置可视化** — 每个模型自带绘图方法，论文级图表一键生成
 - **📝 论文写作辅助** — 摘要自动生成、模型评价、LaTeX 报告、200+ 条语料库
 - **🔬 12 道真题实战验证** — 经过 2019-2024 年国赛 A/B/C 三类题目的端到端测试
-- **✅ 194 个单元测试** — 覆盖全部 25 个模块，边界检查完善
+- **✅ 214 个单元测试** — 覆盖全部 29 个模块，边界检查完善
 
 ---
 
@@ -92,6 +92,7 @@ print(f"未来3年预测: {gp.predict(steps=3)}")
 | 灰色关联 | `GreyRelationalAnalysis` | 序列几何相似度分析 |
 | 模糊综合评价 | `FuzzyEvaluation` | 定性评价定量化，支持多种算子 |
 | 秩和比法 | `RSR` | 融合参数与非参数统计的综合评价 |
+| DEA | `DEA` | 数据包络分析，CCR/BCC 模型，效率评估 |
 
 ### 预测类 (`mathflow.predict`)
 
@@ -108,6 +109,7 @@ print(f"未来3年预测: {gp.predict(steps=3)}")
 |------|------|------|
 | 线性规划 | `LinearProgramming` | 可视化可行域，PuLP 求解 |
 | 整数规划 | `IntegerProgramming` | 支持纯整数/混合整数/0-1 规划 |
+| 非线性规划 | `NonlinearProgramming` | 带约束非线性优化，SLSQP/COBYLA |
 | 遗传算法 | `GeneticAlgorithm` | 通用 GA 框架，实数编码 |
 | 粒子群 | `PSO` | 自适应惯性权重 PSO |
 | 模拟退火 | `SimulatedAnnealing` | Metropolis 准则，高斯扰动 |
@@ -129,8 +131,9 @@ print(f"未来3年预测: {gp.predict(steps=3)}")
 
 | 模型 | 类名 | 说明 |
 |------|------|------|
-| 蒙特卡洛 | `MonteCarlo` | 积分、π估计、风险分析 |
+| 蒙特卡洛 | `MonteCarlo` | 积分、pi估算、风险分析 |
 | 排队论 | `QueueModel` | M/M/1、M/M/c、M/M/1/K |
+| 元胞自动机 | `CellularAutomata` | Game of Life、SIR、森林火灾 |
 
 ### 常微分方程 (`mathflow.ode`)
 
@@ -150,6 +153,7 @@ print(f"未来3年预测: {gp.predict(steps=3)}")
 |------|------|------|
 | 多元回归 | `MultiRegression` | 完整统计报告 (R², F, t, p, DW)，回归诊断图 |
 | 方差分析 | `ANOVA` | 单因素 ANOVA，自动显著性判断 |
+| 相关性分析 | `CorrelationAnalysis` | Pearson/Spearman/Kendall 相关系数，显著性检验 |
 | 灵敏度分析 | `SensitivityAnalysis` | OAT 单因素 / Morris 筛选 / Sobol 全局，龙卷风图 |
 
 ### 机器学习 (`mathflow.ml`)
