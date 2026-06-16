@@ -11,7 +11,7 @@ Example:
 
 import numpy as np
 from dataclasses import dataclass
-from typing import Callable, List, Tuple
+from typing import Callable, List, Tuple, Optional
 
 
 @dataclass
@@ -48,7 +48,8 @@ class SimulatedAnnealing:
     def __init__(self, objective: Callable, n_vars: int,
                  bounds: List[Tuple[float, float]],
                  T_init: float = 1000, T_min: float = 1e-8,
-                 cooling_rate: float = 0.995, max_iter_per_temp: int = 100):
+                 cooling_rate: float = 0.995, max_iter_per_temp: int = 100,
+                 seed: Optional[int] = 42):
         self.objective = objective
         self.n_vars = n_vars
         self.bounds = np.array(bounds)
@@ -56,11 +57,13 @@ class SimulatedAnnealing:
         self.T_min = T_min
         self.cooling_rate = cooling_rate
         self.max_iter_per_temp = max_iter_per_temp
+        self.seed = seed
         self._result = None
 
     def run(self, verbose=False):
         """运行模拟退火."""
-        np.random.seed(42)
+        if self.seed is not None:
+            np.random.seed(self.seed)
 
         # 初始化
         current = np.zeros(self.n_vars)

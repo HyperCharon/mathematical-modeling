@@ -11,7 +11,7 @@ Example:
 
 import numpy as np
 from dataclasses import dataclass
-from typing import Callable, List, Tuple
+from typing import Callable, List, Tuple, Optional
 
 
 @dataclass
@@ -50,7 +50,8 @@ class PSO:
     def __init__(self, fitness_func: Callable, n_vars: int,
                  bounds: List[Tuple[float, float]],
                  n_particles: int = 50, max_iter: int = 200,
-                 w: float = 0.7, c1: float = 1.5, c2: float = 1.5):
+                 w: float = 0.7, c1: float = 1.5, c2: float = 1.5,
+                 seed: Optional[int] = 42):
         # 验证 fitness_func 可调用
         if not callable(fitness_func):
             raise TypeError(f"fitness_func 必须是可调用对象，got {type(fitness_func).__name__}")
@@ -69,11 +70,13 @@ class PSO:
         self.w = w
         self.c1 = c1
         self.c2 = c2
+        self.seed = seed
         self._result = None
 
     def run(self, verbose=False):
         """运行 PSO."""
-        np.random.seed(42)
+        if self.seed is not None:
+            np.random.seed(self.seed)
 
         n = self.n_particles
         d = self.n_vars

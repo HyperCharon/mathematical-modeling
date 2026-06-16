@@ -245,7 +245,7 @@ class AHP:
             f"  矩阵阶数: {r.n}",
             f"  计算方法: {r.method}",
             f"  λ_max:   {r.lambda_max:.4f}",
-            f"  CI:      {r.ci:.4f}" if hasattr(r, 'ci') else f"  CI:      {r.CI:.4f}",
+            f"  CI:      {r.CI:.4f}",
             f"  CR:      {r.CR:.4f}",
             f"  一致性:  {'✅ 通过' if r.is_consistent else '❌ 未通过'} (阈值={self.cr_threshold})",
             "-" * 50,

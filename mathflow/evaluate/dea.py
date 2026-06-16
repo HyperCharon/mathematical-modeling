@@ -158,7 +158,7 @@ class DEA:
                 return -result.fun  # 因为是最小化负值
             else:
                 return 1.0
-        except:
+        except Exception:
             return 1.0
 
     def _solve_output_oriented(self, idx: int) -> float:
@@ -198,7 +198,7 @@ class DEA:
                 return result.fun
             else:
                 return 1.0
-        except:
+        except Exception:
             return 1.0
 
     def _solve_bcc_input(self, idx: int) -> float:
@@ -251,7 +251,7 @@ class DEA:
                 return result.fun
             else:
                 return 1.0
-        except:
+        except Exception:
             return 1.0
 
     @property

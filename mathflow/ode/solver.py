@@ -240,9 +240,8 @@ def heat_equation_1d(T_left=100, T_right=25, T_init=None, alpha=0.01, L=1.0, nx=
 
     def func(t, T):
         dTdt = np.zeros_like(T)
-        # 内部节点: 中心差分
-        for i in range(1, nx - 1):
-            dTdt[i] = alpha * (T[i+1] - 2*T[i] + T[i-1]) / dx**2
+        # 内部节点: 中心差分 (向量化)
+        dTdt[1:-1] = alpha * (T[2:] - 2*T[1:-1] + T[:-2]) / dx**2
         # 边界条件
         dTdt[0] = 0  # 左边界恒温
         dTdt[-1] = 0  # 右边界恒温
@@ -274,8 +273,8 @@ def wave_equation_1d(c=1.0, L=1.0, nx=100):
         v = y[nx:]
         dudt = v
         dvdt = np.zeros(nx)
-        for i in range(1, nx - 1):
-            dvdt[i] = c**2 * (u[i+1] - 2*u[i] + u[i-1]) / dx**2
+        # 向量化计算空间二阶导数
+        dvdt[1:-1] = c**2 * (u[2:] - 2*u[1:-1] + u[:-2]) / dx**2
         return np.concatenate([dudt, dvdt])
 
     return func, y0, x

@@ -14,7 +14,7 @@ Example:
 
 import numpy as np
 from dataclasses import dataclass
-from typing import Callable, List, Tuple
+from typing import Callable, List, Tuple, Optional
 
 
 @dataclass
@@ -46,18 +46,21 @@ class NSGA2:
 
     def __init__(self, objectives: List[Callable], n_vars: int,
                  bounds: List[Tuple[float, float]],
-                 pop_size: int = 100, generations: int = 200):
+                 pop_size: int = 100, generations: int = 200,
+                 seed: Optional[int] = 42):
         self.objectives = objectives
         self.n_obj = len(objectives)
         self.n_vars = n_vars
         self.bounds = np.array(bounds)
         self.pop_size = pop_size
         self.generations = generations
+        self.seed = seed
         self._result = None
 
     def run(self, verbose=False):
         """运行 NSGA-II."""
-        np.random.seed(42)
+        if self.seed is not None:
+            np.random.seed(self.seed)
 
         # 初始化种群
         pop = self._init_population()

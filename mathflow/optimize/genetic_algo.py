@@ -62,7 +62,8 @@ class GeneticAlgorithm:
                  bounds: List[Tuple[float, float]],
                  pop_size: int = 100, generations: int = 200,
                  crossover_rate: float = 0.8, mutation_rate: float = 0.1,
-                 elitism: int = 2, encoding: str = "real"):
+                 elitism: int = 2, encoding: str = "real",
+                 seed: Optional[int] = 42):
         # 验证 fitness_func 可调用
         if not callable(fitness_func):
             raise TypeError(f"fitness_func 必须是可调用对象，got {type(fitness_func).__name__}")
@@ -82,11 +83,13 @@ class GeneticAlgorithm:
         self.mutation_rate = mutation_rate
         self.elitism = elitism
         self.encoding = encoding
+        self.seed = seed
         self._result = None
 
     def run(self, verbose=False):
         """运行遗传算法."""
-        np.random.seed(42)
+        if self.seed is not None:
+            np.random.seed(self.seed)
 
         # 初始化种群
         pop = self._init_population()

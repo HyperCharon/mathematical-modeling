@@ -59,7 +59,13 @@ class MonteCarlo:
         """
         np.random.seed(self.seed)
         x = np.random.uniform(a, b, n_samples)
-        y = np.array([func(xi) for xi in x])
+        # 向量化计算：如果func支持数组输入则使用向量化，否则回退到循环
+        try:
+            y = func(x)
+            if np.isscalar(y):
+                raise ValueError
+        except (ValueError, TypeError):
+            y = np.array([func(xi) for xi in x])
         estimate = (b - a) * y.mean()
         std_error = (b - a) * y.std() / np.sqrt(n_samples)
         ci = (estimate - 1.96 * std_error, estimate + 1.96 * std_error)

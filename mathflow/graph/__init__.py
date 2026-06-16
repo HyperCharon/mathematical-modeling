@@ -1,4 +1,4 @@
-"""图论与网络: 最短路径, 最小生成树, 网络流, TSP, 匈牙利算法, CPM/PERT."""
+"""图论与网络: 最短路径, 最小生成树, 网络流, TSP, 匈牙利算法, CPM/PERT, 网络分析."""
 
 from mathflow.graph.shortest_path import ShortestPath
 from mathflow.graph.min_spanning_tree import MinSpanningTree
@@ -6,3 +6,4 @@ from mathflow.graph.network_flow import NetworkFlow
 from mathflow.graph.tsp import TSPSolver
 from mathflow.graph.hungarian import Hungarian
 from mathflow.graph.cpm_pert import CPM
+from mathflow.graph.network_analysis import NetworkAnalysis
