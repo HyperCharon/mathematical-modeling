@@ -34,6 +34,9 @@ class HypothesisTest:
     def __init__(self, alpha=0.05):
         self.alpha = alpha
 
+    def __repr__(self) -> str:
+        return f"HypothesisTest(alpha={self.alpha})"
+
     def one_sample_ttest(self, data, mu0: float) -> TestResult:
         """单样本 t 检验: H0: μ = μ0."""
         data = np.asarray(data, dtype=float)

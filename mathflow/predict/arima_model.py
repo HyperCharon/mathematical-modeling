@@ -57,6 +57,11 @@ class ARIMAModel:
         self._result = None
         self._order = None
 
+    def __repr__(self) -> str:
+        if self._order is not None:
+            return f"ARIMAModel(n={len(self.data)}, order={self._order})"
+        return f"ARIMAModel(n={len(self.data)})"
+
     def fit(self, order=(1, 1, 1)):
         """
         拟合 ARIMA(p, d, q) 模型.

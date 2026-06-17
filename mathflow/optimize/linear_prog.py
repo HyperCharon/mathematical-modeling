@@ -47,6 +47,11 @@ class LinearProgramming:
         self._var_names = None
         self._bounds = []
 
+    def __repr__(self) -> str:
+        if hasattr(self, '_lp_result') and self._lp_result is not None:
+            return f"LinearProgramming(status={self._lp_result.status!r}, obj={self._lp_result.optimal_value:.4f})"
+        return f"LinearProgramming(sense={self._obj_sense!r})"
+
     def set_objective(self, coeffs, sense="min", var_names=None):
         """
         设置目标函数.

@@ -43,6 +43,11 @@ class CRITIC:
         self.types = types
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"CRITIC(n_samples={self.data.shape[0]}, n_indicators={self.data.shape[1]})"
+        return f"CRITIC(shape={self.data.shape})"
+
     def fit(self):
         """计算 CRITIC 权重."""
         data = self.data.copy()

@@ -46,6 +46,11 @@ class Hungarian:
         if self.cost_matrix.ndim != 2:
             raise ValueError("成本矩阵必须是二维的")
 
+    def __repr__(self) -> str:
+        if hasattr(self, '_result') and self._result is not None:
+            return f"Hungarian(shape={self.cost_matrix.shape}, total_cost={self._result.total_cost})"
+        return f"Hungarian(shape={self.cost_matrix.shape})"
+
     def solve(self) -> AssignmentResult:
         """求解指派问题."""
         cost = self.cost_matrix.copy()

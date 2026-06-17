@@ -53,6 +53,9 @@ class CellularAutomata:
         self._custom_rule = None
         self._result = None
 
+    def __repr__(self) -> str:
+        return f"CellularAutomata(grid={self.grid_size}, states={self.n_states}, boundary={self.boundary!r})"
+
     def initialize(self, pattern: str = "random", **kwargs):
         """
         初始化网格.

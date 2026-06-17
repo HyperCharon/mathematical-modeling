@@ -60,6 +60,11 @@ class SimulatedAnnealing:
         self.seed = seed
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"SimulatedAnnealing(n_vars={self.n_vars}, best={self._result.best_energy:.4f})"
+        return f"SimulatedAnnealing(n_vars={self.n_vars})"
+
     def run(self, verbose=False):
         """运行模拟退火."""
         if self.seed is not None:

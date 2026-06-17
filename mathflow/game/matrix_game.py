@@ -38,6 +38,15 @@ class MatrixGame:
         self.m, self.n = self.payoff.shape
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"MatrixGame({self.m}x{self.n}, value={self._result.value:.4f})"
+        return f"MatrixGame({self.m}x{self.n})"
+
+    def _ensure_result(self) -> None:
+        if self._result is None:
+            raise RuntimeError("请先调用 solve() 方法")
+
     def solve(self) -> MatrixGameResult:
         """求解矩阵博弈."""
         # 先检查鞍点

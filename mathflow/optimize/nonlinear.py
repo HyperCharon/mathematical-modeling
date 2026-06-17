@@ -47,6 +47,11 @@ class NonlinearProgramming:
         self.bounds = None
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"NonlinearProgramming(success={self._result.success}, obj={self._result.optimal_value:.4f})"
+        return f"NonlinearProgramming()"
+
     def set_objective(self, func: Callable):
         """
         设置目标函数.

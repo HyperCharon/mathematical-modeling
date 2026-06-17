@@ -51,6 +51,11 @@ class GreyDecision:
         self.types = types if types is not None else [1] * m
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"GreyDecision(n_samples={self.data.shape[0]}, n_indicators={self.data.shape[1]})"
+        return f"GreyDecision(shape={self.data.shape})"
+
     def evaluate(self, method="grey_relational") -> GreyDecisionResult:
         """
         灰色评价.

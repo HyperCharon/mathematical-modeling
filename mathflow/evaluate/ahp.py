@@ -19,6 +19,7 @@ Example:
 import numpy as np
 from dataclasses import dataclass, field
 from typing import Optional
+from mathflow.core.config import config
 
 
 # AHP 1-9 标度随机一致性指标 RI 表
@@ -58,9 +59,9 @@ class AHP:
         一致性比率阈值，默认 0.10
     """
 
-    def __init__(self, method: str = "eigenvalue", cr_threshold: float = 0.10):
+    def __init__(self, method: str = "eigenvalue", cr_threshold: float = None):
         self.method = method
-        self.cr_threshold = cr_threshold
+        self.cr_threshold = cr_threshold if cr_threshold is not None else config.ahp_cr_threshold
         self._matrix = None
         self._result = None
 

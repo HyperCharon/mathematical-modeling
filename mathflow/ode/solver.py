@@ -48,6 +48,11 @@ class ODESolver:
         self.y0 = np.atleast_1d(np.asarray(y0, dtype=float))
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"ODESolver(y0={self.y0}, n_steps={len(self._result.t)})"
+        return f"ODESolver(y0={self.y0})"
+
     def solve(self, t_span=(0, 10), dt=0.01, method="rk4"):
         """
         求解 ODE.

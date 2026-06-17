@@ -52,6 +52,9 @@ class GreyRelationalAnalysis:
         self.rho = rho
         self._result = None
 
+    def __repr__(self) -> str:
+        return f"GreyRelationalAnalysis(n_compare={self.compare.shape[0]}, rho={self.rho})"
+
     def fit(self):
         """计算灰色关联度."""
         ref = self.reference

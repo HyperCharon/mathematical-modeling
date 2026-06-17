@@ -74,6 +74,9 @@ class NetworkAnalysis:
                 if self.adjacency[i, j] > 0:
                     self.adj_list[i].append(j)
 
+    def __repr__(self) -> str:
+        return f"NetworkAnalysis(n_nodes={self.n_nodes}, directed={self.directed})"
+
     def degree_centrality(self) -> np.ndarray:
         """
         计算度中心性.

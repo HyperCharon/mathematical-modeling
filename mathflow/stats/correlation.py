@@ -57,6 +57,9 @@ class CorrelationAnalysis:
 
         self._result = None
 
+    def __repr__(self) -> str:
+        return f"CorrelationAnalysis(n_samples={self.n_samples}, n_vars={self.n_vars})"
+
     def fit(self, method: str = "pearson") -> CorrelationResult:
         """
         计算相关系数.

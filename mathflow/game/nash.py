@@ -53,6 +53,11 @@ class NashEquilibrium:
         self.p2_names = p2_names or [f"t{j+1}" for j in range(self.n)]
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"NashEquilibrium({self.m}x{self.n}, equilibria={len(self._result.pure_equilibria) + len(self._result.mixed_equilibria)})"
+        return f"NashEquilibrium({self.m}x{self.n})"
+
     def find_pure(self) -> List[Tuple]:
         """找纯策略 Nash 均衡."""
         equilibria = []

@@ -60,6 +60,11 @@ class ExponentialSmoothing:
         self.seasonal_type = seasonal_type
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"ExponentialSmoothing(n={len(self.data)}, method={self.method!r})"
+        return f"ExponentialSmoothing(n={len(self.data)}, method={self.method!r})"
+
     def fit(self):
         """拟合指数平滑模型."""
         if self.method == "simple":

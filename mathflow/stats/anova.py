@@ -73,6 +73,11 @@ class ANOVA:
         self._result = None
         self._two_way_result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"ANOVA(alpha={self.alpha}, fitted=True)"
+        return f"ANOVA(alpha={self.alpha})"
+
     def one_way(self, *groups, group_names=None):
         """
         单因素方差分析.

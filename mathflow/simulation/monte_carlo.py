@@ -34,6 +34,9 @@ class MonteCarlo:
     def __init__(self, seed=42):
         self.seed = seed
 
+    def __repr__(self) -> str:
+        return f"MonteCarlo(seed={self.seed})"
+
     def estimate_pi(self, n_samples=100000):
         """用蒙特卡洛方法估算 π."""
         np.random.seed(self.seed)

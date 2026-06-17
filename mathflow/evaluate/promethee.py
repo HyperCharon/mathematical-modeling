@@ -87,6 +87,11 @@ class PROMETHEE:
 
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"PROMETHEE(n_alternatives={self.n_alternatives}, n_criteria={self.n_criteria}, func={self.preference_function!r})"
+        return f"PROMETHEE(n_alternatives={self.n_alternatives}, n_criteria={self.n_criteria})"
+
     def _compute_preference(self, d, j):
         """
         计算偏好函数值.

@@ -58,6 +58,11 @@ class RSR:
         self.types = types
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"RSR(n_samples={self.data.shape[0]}, n_indicators={self.data.shape[1]})"
+        return f"RSR(shape={self.data.shape})"
+
     def fit(self):
         """计算 RSR."""
         data = self.data.copy()

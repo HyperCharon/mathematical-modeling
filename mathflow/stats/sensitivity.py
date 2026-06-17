@@ -49,6 +49,9 @@ class SensitivityAnalysis:
         self.var_names = var_names or [f"参数{i+1}" for i in range(n_vars)]
         self._result = None
 
+    def __repr__(self) -> str:
+        return f"SensitivityAnalysis(n_vars={self.n_vars})"
+
     def one_at_a_time(self, base_values, perturbation=0.1, n_levels=21):
         """
         单因素灵敏度分析 (OAT/OAT).

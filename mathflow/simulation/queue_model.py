@@ -49,6 +49,11 @@ class QueueModel:
         self.K = capacity
         self._result = None
 
+    def __repr__(self) -> str:
+        if self.K is not None:
+            return f"QueueModel(λ={self.lambda_}, μ={self.mu}, c={self.c}, K={self.K})"
+        return f"QueueModel(λ={self.lambda_}, μ={self.mu}, c={self.c})"
+
     def solve(self):
         """计算排队系统指标."""
         lam = self.lambda_

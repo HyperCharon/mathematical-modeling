@@ -44,6 +44,11 @@ class StationarityTest:
         self.significance = significance
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"StationarityTest(n={len(self.data)}, stationary={self._result.is_stationary})"
+        return f"StationarityTest(n={len(self.data)})"
+
     def adf_test(self):
         """ADF (Augmented Dickey-Fuller) 检验."""
         try:

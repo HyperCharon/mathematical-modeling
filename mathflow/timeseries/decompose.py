@@ -48,6 +48,11 @@ class TimeSeriesDecompose:
         self.model = model
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"TimeSeriesDecompose(n={len(self.data)}, period={self.period}, model={self.model!r})"
+        return f"TimeSeriesDecompose(n={len(self.data)}, period={self.period})"
+
     def decompose(self, method="moving_average") -> DecomposeResult:
         """
         执行分解.

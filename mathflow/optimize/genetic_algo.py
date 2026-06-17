@@ -86,6 +86,11 @@ class GeneticAlgorithm:
         self.seed = seed
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"GeneticAlgorithm(n_vars={self.n_vars}, pop={self.pop_size}, best={self._result.best_fitness:.4f})"
+        return f"GeneticAlgorithm(n_vars={self.n_vars}, pop={self.pop_size}, gen={self.generations})"
+
     def run(self, verbose=False):
         """运行遗传算法."""
         if self.seed is not None:

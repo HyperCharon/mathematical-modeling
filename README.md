@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-214%20passed-brightgreen.svg)](#测试)
-[![Coverage](https://img.shields.io/badge/真题验证-12%20道-orange.svg)]#真题实战验证)
+[![Coverage](https://img.shields.io/badge/真题验证-12%20道-orange.svg)](#真题实战验证)
 
 > 一站式 Python 工具库，覆盖数学建模竞赛中的 **评价、预测、优化、图论、仿真、ODE、统计、ML、博弈论、动态规划、时间序列、模糊逻辑、马尔可夫、灰色系统、小波分析、论文写作** 全链路。
 >
@@ -13,12 +13,13 @@
 
 ## ✨ 核心特性
 
-- **📦 29 个模块，95+ 算法** — 覆盖数模国赛 95% 以上的题型
+- **📦 31 个模块，105+ 算法** — 覆盖数模国赛 95% 以上的题型
 - **🎯 统一 API** — 所有模型遵循 `创建 → fit() → 结果` 的一致接口
 - **📊 内置可视化** — 每个模型自带绘图方法，论文级图表一键生成
 - **📝 论文写作辅助** — 摘要自动生成、模型评价、LaTeX 报告、200+ 条语料库
 - **🔬 12 道真题实战验证** — 经过 2019-2024 年国赛 A/B/C 三类题目的端到端测试
-- **✅ 214 个单元测试** — 覆盖全部 29 个模块，边界检查完善
+- **✅ 214 个单元测试** — 覆盖全部 31 个模块，边界检查完善
+- **🖨️ 丰富的 `__repr__`** — 所有模型类均有友好的打印输出，方便调试
 
 ---
 
@@ -93,6 +94,7 @@ print(f"未来3年预测: {gp.predict(steps=3)}")
 | 模糊综合评价 | `FuzzyEvaluation` | 定性评价定量化，支持多种算子 |
 | 秩和比法 | `RSR` | 融合参数与非参数统计的综合评价 |
 | DEA | `DEA` | 数据包络分析，CCR/BCC 模型，效率评估 |
+| PROMETHEE | `PROMETHEE` | 偏好排序方法，支持多种偏好函数 |
 
 ### 预测类 (`mathflow.predict`)
 
@@ -126,6 +128,7 @@ print(f"未来3年预测: {gp.predict(steps=3)}")
 | TSP | `TSPSolver` | 暴力/最近邻/2-opt/遗传算法 |
 | 匈牙利算法 | `Hungarian` | 最小成本/最大收益指派 |
 | 关键路径 | `CPM` | 前推/后推，关键路径识别，甘特图 |
+| 网络分析 | `NetworkAnalysis` | 中心性指标、PageRank、社区发现 |
 
 ### 仿真 (`mathflow.simulation`)
 
@@ -388,8 +391,8 @@ mathematical-modeling/
 │   ├── data/          # 数据处理
 │   ├── viz/           # 可视化
 │   └── core/          # 核心工具
-├── examples/          # 19 个完整示例
-├── tests/             # 100 个单元测试
+├── examples/          # 23 个完整示例
+├── tests/             # 214 个单元测试
 ├── app.py             # Streamlit Web UI
 └── pyproject.toml     # 项目配置
 ```

@@ -51,6 +51,11 @@ class EventODESolver:
         self.event_types = event_types or ["record"] * len(self.events)
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"EventODESolver(y0={self.y0}, events={len(self.events)}, n_steps={len(self._result.t)})"
+        return f"EventODESolver(y0={self.y0}, events={len(self.events)})"
+
     def solve(self, t_span=(0, 10), dt=0.01, method="rk4") -> EventODEResult:
         """求解ODE并检测事件."""
         t_start, t_end = t_span

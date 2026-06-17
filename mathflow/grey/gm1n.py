@@ -51,6 +51,9 @@ class GM1N:
         self.target_var = target_var if target_var is not None else self.n_vars - 1
         self._result = None
 
+    def __repr__(self) -> str:
+        return f"GM1N(n_times={self.n_times}, n_vars={self.n_vars})"
+
     def fit(self) -> GM1NResult:
         """拟合 GM(1,N) 模型."""
         X = self.X

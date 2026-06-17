@@ -50,6 +50,11 @@ class RegressionPredict:
         self.y = np.asarray(y, dtype=float)
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"RegressionPredict(n_samples={self.X.shape[0]}, n_features={self.X.shape[1]}, R2={self._result.r2:.4f})"
+        return f"RegressionPredict(n_samples={self.X.shape[0]}, n_features={self.X.shape[1]})"
+
     def fit(self, method="linear", degree=2, alpha=1.0):
         """
         拟合回归模型.

@@ -38,6 +38,11 @@ class NetworkFlow:
         self.n_nodes = n_nodes
         self.capacity = {}
 
+    def __repr__(self) -> str:
+        if hasattr(self, '_result') and self._result is not None:
+            return f"NetworkFlow(n_nodes={self.n_nodes}, max_flow={self._result.max_flow_value})"
+        return f"NetworkFlow(n_nodes={self.n_nodes})"
+
     def add_edge(self, u, v, capacity):
         """添加边 (u, v) 及其容量."""
         self.n_nodes = max(self.n_nodes, u + 1, v + 1)

@@ -70,6 +70,12 @@ class DEA:
         self.n_dmu = self.inputs.shape[0]
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            n_eff = sum(self._result.is_efficient)
+            return f"DEA(n_dmu={self.n_dmu}, model={self.model!r}, efficient={n_eff}/{self.n_dmu})"
+        return f"DEA(n_dmu={self.n_dmu}, model={self.model!r})"
+
     def fit(self) -> DEAResult:
         """执行 DEA 分析."""
         from scipy.optimize import linprog

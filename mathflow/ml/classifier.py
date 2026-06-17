@@ -75,6 +75,11 @@ class Classifier:
         self.X_train_s = self._scaler.fit_transform(self.X_train)
         self.X_test_s = self._scaler.transform(self.X_test)
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"Classifier(n_samples={self.X.shape[0]}, n_features={self.X.shape[1]}, best={self._result.method!r})"
+        return f"Classifier(n_samples={self.X.shape[0]}, n_features={self.X.shape[1]})"
+
     def fit(self, method="random_forest", **kwargs):
         """
         训练分类器.

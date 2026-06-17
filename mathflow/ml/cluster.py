@@ -62,6 +62,11 @@ class ClusterAnalysis:
         else:
             self._data_scaled = self.data.copy()
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"ClusterAnalysis(n_samples={self.data.shape[0]}, n_features={self.data.shape[1]}, method={self._result.method!r})"
+        return f"ClusterAnalysis(shape={self.data.shape})"
+
     def auto_k(self, max_k=10, method="elbow_silhouette"):
         """
         自动选择最优 K.

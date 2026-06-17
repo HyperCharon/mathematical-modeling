@@ -1112,4 +1112,5 @@ if issues:
 else:
     print("  No issues found!")
 
-sys.exit(0 if not issues else 1)
+if __name__ == "__main__":
+    sys.exit(0 if not issues else 1)

@@ -11,6 +11,7 @@ Example:
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from mathflow.core.config import config
 
 # 数模论文常用配色
 COLORS = {
@@ -27,8 +28,12 @@ PALETTE = ["#3B82F6", "#EF4444", "#10B981", "#F59E0B", "#8B5CF6",
            "#EC4899", "#14B8A6", "#F97316", "#6366F1", "#84CC16"]
 
 
-def set_paper_style(font_size=12, dpi=150):
+def set_paper_style(font_size=None, dpi=None):
     """设置论文风格 (中文友好)."""
+    if font_size is None:
+        font_size = config.font_size
+    if dpi is None:
+        dpi = config.figure_dpi
     plt.rcParams.update({
         "figure.dpi": dpi,
         "font.size": font_size,

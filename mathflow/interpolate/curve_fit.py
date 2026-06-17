@@ -98,6 +98,11 @@ class CurveFitter:
             raise ValueError("x 和 y 长度必须一致")
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"CurveFitter(n_points={len(self.x)}, best_model={self._result.func_name!r})"
+        return f"CurveFitter(n_points={len(self.x)})"
+
     def fit(self, model_name="linear", **kwargs):
         """
         拟合指定模型.

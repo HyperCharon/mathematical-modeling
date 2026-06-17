@@ -39,6 +39,9 @@ class ShortestPath:
         self.edges = []  # [(u, v, w)]
         self.adj = {}  # {u: [(v, w), ...]}
 
+    def __repr__(self) -> str:
+        return f"ShortestPath(n_nodes={self.n_nodes}, n_edges={len(self.edges)})"
+
     def add_edge(self, u, v, weight=1.0, directed=True):
         """添加边."""
         self.edges.append((u, v, weight))

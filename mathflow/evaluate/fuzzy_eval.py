@@ -64,6 +64,11 @@ class FuzzyEvaluation:
         self.grade_scores = grade_scores
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"FuzzyEvaluation(n_factors={len(self.weights)}, n_grades={len(self.grade_names)}, grade={self._result.grade_name!r})"
+        return f"FuzzyEvaluation(n_factors={len(self.weights)}, n_grades={len(self.grade_names)})"
+
     def fit(self):
         """执行模糊综合评价."""
         W = self.weights

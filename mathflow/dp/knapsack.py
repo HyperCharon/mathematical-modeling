@@ -42,6 +42,9 @@ class Knapsack:
         self.capacity = capacity
         self.items = []  # [(weight, value, name)]
 
+    def __repr__(self) -> str:
+        return f"Knapsack(capacity={self.capacity}, n_items={len(self.items)})"
+
     def add_item(self, weight: float, value: float, name: str = ""):
         """添加物品."""
         self.items.append((weight, value, name or f"物品{len(self.items)}"))

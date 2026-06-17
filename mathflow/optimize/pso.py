@@ -73,6 +73,11 @@ class PSO:
         self.seed = seed
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"PSO(n_vars={self.n_vars}, particles={self.n_particles}, best={self._result.best_fitness:.4f})"
+        return f"PSO(n_vars={self.n_vars}, particles={self.n_particles})"
+
     def run(self, verbose=False):
         """运行 PSO."""
         if self.seed is not None:

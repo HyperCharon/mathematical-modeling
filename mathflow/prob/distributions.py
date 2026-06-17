@@ -59,6 +59,12 @@ class DistributionFitter:
             warnings.warn("数据为常数，分布拟合结果可能无意义")
         self._results = []
 
+    def __repr__(self) -> str:
+        if self._results:
+            best = self._results[0]
+            return f"DistributionFitter(n={self.n}, best={best.distribution!r})"
+        return f"DistributionFitter(n={self.n})"
+
     def fit(self, dist_name: str) -> FitResult:
         """拟合指定分布."""
         dist_info = next((d for d in self.DISTRIBUTIONS if d[0] == dist_name), None)

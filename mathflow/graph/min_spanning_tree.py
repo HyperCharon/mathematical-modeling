@@ -28,6 +28,11 @@ class MinSpanningTree:
         self.edges = []
         self.n_nodes = 0
 
+    def __repr__(self) -> str:
+        if hasattr(self, '_result') and self._result is not None:
+            return f"MinSpanningTree(n_nodes={self.n_nodes}, mst_weight={self._result.total_weight:.4f})"
+        return f"MinSpanningTree(n_nodes={self.n_nodes}, n_edges={len(self.edges)})"
+
     def add_edge(self, u, v, weight=1.0):
         self.edges.append((u, v, weight))
         self.n_nodes = max(self.n_nodes, u + 1, v + 1)

@@ -49,6 +49,9 @@ class TSPSolver:
         else:
             raise ValueError("需要提供 coords 或 dist_matrix")
 
+    def __repr__(self) -> str:
+        return f"TSPSolver(n_cities={self.n})"
+
     def _calc_distance_matrix(self):
         """计算欧氏距离矩阵."""
         n = self.n

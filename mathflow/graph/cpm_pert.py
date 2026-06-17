@@ -58,6 +58,11 @@ class CPM:
     def __init__(self):
         self.activities = {}
 
+    def __repr__(self) -> str:
+        if hasattr(self, '_result') and self._result is not None:
+            return f"CPM(n_activities={len(self.activities)}, duration={self._result.project_duration:.1f})"
+        return f"CPM(n_activities={len(self.activities)})"
+
     def add_activity(self, name: str, duration: float, predecessors: List[str] = None):
         """添加活动."""
         if predecessors is None:

@@ -31,6 +31,9 @@ class FuzzyInference:
         self.rules = []
         self.mf = MembershipFunction()
 
+    def __repr__(self) -> str:
+        return f"FuzzyInference(inputs={len(self.inputs)}, outputs={len(self.outputs)}, rules={len(self.rules)})"
+
     def add_input(self, name: str, range_: Tuple, terms: List):
         """
         添加输入变量.

@@ -36,6 +36,11 @@ class IntegerProgramming:
         self._constraints = []
         self._var_names = None
 
+    def __repr__(self) -> str:
+        if hasattr(self, '_ip_result') and self._ip_result is not None:
+            return f"IntegerProgramming(status={self._ip_result.status!r}, obj={self._ip_result.optimal_value:.4f})"
+        return f"IntegerProgramming(sense={self._obj_sense!r})"
+
     def set_objective(self, coeffs, sense="min", var_names=None):
         """设置目标函数."""
         self._obj_coeffs = np.asarray(coeffs, dtype=float)

@@ -57,6 +57,11 @@ class NSGA2:
         self.seed = seed
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"NSGA2(n_obj={self.n_obj}, n_vars={self.n_vars}, pareto_size={len(self._result.pareto_front)})"
+        return f"NSGA2(n_obj={self.n_obj}, n_vars={self.n_vars}, pop={self.pop_size})"
+
     def run(self, verbose=False):
         """运行 NSGA-II."""
         if self.seed is not None:

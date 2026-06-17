@@ -52,6 +52,11 @@ class GreyPrediction:
             warnings.warn("GM(1,1) 要求原始数据非负，负值可能导致预测结果不准确")
         self._result = None
 
+    def __repr__(self) -> str:
+        if self._result is not None:
+            return f"GreyPrediction(n_points={len(self.data)}, fitted=True)"
+        return f"GreyPrediction(n_points={len(self.data)})"
+
     def fit(self):
         """拟合 GM(1,1) 模型."""
         X0 = self.data
