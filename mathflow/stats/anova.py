@@ -20,7 +20,7 @@ Example:
 import numpy as np
 from scipy import stats as scipy_stats
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 
 @dataclass
@@ -77,6 +77,10 @@ class ANOVA:
         if self._result is not None:
             return f"ANOVA(alpha={self.alpha}, fitted=True)"
         return f"ANOVA(alpha={self.alpha})"
+
+    def _ensure_result(self) -> None:
+        if self._result is None:
+            raise RuntimeError("请先调用 one_way() 或 two_way()")
 
     def one_way(self, *groups, group_names=None):
         """

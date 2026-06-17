@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from mathflow.evaluate import AHP, TOPSIS, EntropyWeight, CRITIC, GreyRelationalAnalysis, FuzzyEvaluation
+from mathflow.evaluate import AHP, TOPSIS, EntropyWeight, CRITIC, GreyRelationalAnalysis, FuzzyEvaluation, PROMETHEE, RSR
 
 
 class TestAHP:
@@ -108,6 +108,35 @@ class TestFuzzyEvaluation:
         fuzzy.fit()
         assert fuzzy.result_grade in ["优", "良", "中", "差"]
         assert abs(fuzzy.result.fuzzy_vector.sum() - 1.0) < 1e-6
+
+
+class TestPROMETHEE:
+    def test_basic(self):
+        data = np.array([[80, 90, 85], [70, 80, 90], [90, 85, 75]])
+        p = PROMETHEE(data, weights=[1/3, 1/3, 1/3], types=[1, 1, -1])
+        result = p.fit()
+        assert result is not None
+        assert len(result.rankings) == 3
+        assert len(result.phi_net) == 3
+
+    def test_repr(self):
+        data = np.array([[80, 90], [70, 80]])
+        p = PROMETHEE(data, weights=[0.5, 0.5])
+        assert "PROMETHEE" in repr(p)
+
+
+class TestRSR:
+    def test_basic(self):
+        data = np.array([[80, 90, 85], [70, 80, 90], [90, 85, 75]])
+        r = RSR(data, types=[1, 1, 1])
+        r.fit()
+        assert len(r.rankings) == 3
+        assert len(r.rsr_values) == 3
+
+    def test_repr(self):
+        data = np.array([[80, 90], [70, 80]])
+        r = RSR(data)
+        assert "RSR" in repr(r)
 
 
 if __name__ == "__main__":

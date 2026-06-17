@@ -15,7 +15,7 @@ Example:
 
 import numpy as np
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 
 @dataclass
@@ -94,6 +94,7 @@ class WaveletTransform:
 
     def reconstruct(self, coeffs: List[np.ndarray] = None) -> np.ndarray:
         """小波重构."""
+        self._ensure_result()
         if coeffs is None:
             coeffs = self._result.coeffs
 

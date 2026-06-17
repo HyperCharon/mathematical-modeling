@@ -10,7 +10,6 @@ Example:
 """
 
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 from mathflow.core.config import config
 
 # 数模论文常用配色

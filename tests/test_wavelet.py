@@ -22,8 +22,8 @@ class TestWaveletTransform:
         from mathflow.wavelet.transform import WaveletTransform
         signal = np.random.randn(64)
         wt = WaveletTransform(signal, wavelet="haar")
-        # 未 decompose 时 reconstruct 应抛出 AttributeError (NoneType)
-        with pytest.raises(AttributeError):
+        # 未 decompose 时 reconstruct 应抛出 RuntimeError
+        with pytest.raises(RuntimeError):
             wt.reconstruct()
 
     def test_haar_constant_signal(self):

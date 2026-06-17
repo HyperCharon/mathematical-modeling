@@ -12,10 +12,9 @@ Example:
     >>> paper.generate("paper.tex")
 """
 
-from typing import List, Dict, Optional
+from typing import List, Dict
 from mathflow.paper.abstract_gen import AbstractGenerator
 from mathflow.paper.section_gen import SectionGenerator
-from mathflow.paper.model_eval import ModelEvaluator
 
 
 class FullPaper:

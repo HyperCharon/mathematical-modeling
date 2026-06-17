@@ -10,7 +10,6 @@ Example:
 """
 
 import numpy as np
-from typing import Optional
 
 
 class TemplateRunner:

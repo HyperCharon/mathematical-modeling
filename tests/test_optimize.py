@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from mathflow.optimize import LinearProgramming, GeneticAlgorithm, PSO, SimulatedAnnealing
+from mathflow.optimize import LinearProgramming, GeneticAlgorithm, PSO, SimulatedAnnealing, NSGA2, IntegerProgramming
 
 
 class TestLinearProgramming:
@@ -64,6 +64,33 @@ class TestSimulatedAnnealing:
         sa = SimulatedAnnealing(f, n_vars=2, bounds=[(-10, 10)] * 2)
         result = sa.run()
         assert result.best_energy < 1.0
+
+
+class TestNSGA2:
+    def test_basic(self):
+        def f1(x): return x[0]**2
+        def f2(x): return (x[0] - 1)**2
+        nsga = NSGA2([f1, f2], n_vars=1, bounds=[(-5, 5)], pop_size=20, generations=10)
+        result = nsga.run()
+        assert len(result.pareto_front) > 0
+
+    def test_repr(self):
+        nsga = NSGA2([lambda x: x[0]], n_vars=1, bounds=[(0, 1)])
+        assert "NSGA2" in repr(nsga)
+
+
+class TestIntegerProgramming:
+    def test_basic(self):
+        ip = IntegerProgramming()
+        ip.set_objective([1, 2], sense="max")
+        ip.add_constraint([1, 1], "<=", 10)
+        ip.add_constraint([1, 0], "<=", 6)
+        result = ip.solve(integer_vars=[0, 1])
+        assert result.status in ["Optimal", "Feasible"]
+
+    def test_repr(self):
+        ip = IntegerProgramming()
+        assert "IntegerProgramming" in repr(ip)
 
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ Example:
 
 import numpy as np
 from dataclasses import dataclass
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, List
 
 
 @dataclass
@@ -51,6 +51,11 @@ class SensitivityAnalysis:
 
     def __repr__(self) -> str:
         return f"SensitivityAnalysis(n_vars={self.n_vars})"
+
+    def _ensure_result(self) -> None:
+        """确保已运行分析."""
+        if self._result is None:
+            raise RuntimeError("请先调用 one_at_a_time() / morris_screening() / sobol_indices()")
 
     def one_at_a_time(self, base_values, perturbation=0.1, n_levels=21):
         """
@@ -259,6 +264,7 @@ class SensitivityAnalysis:
         style : str
             "bar" (柱状图) 或 "tornado" (龙卷风图)
         """
+        self._ensure_result()
         import matplotlib.pyplot as plt
 
         r = self._result
@@ -331,6 +337,7 @@ class SensitivityAnalysis:
         return fig
 
     def summary(self):
+        self._ensure_result()
         r = self._result
         lines = [
             "=" * 60,

@@ -16,7 +16,7 @@ Example:
 
 import numpy as np
 from dataclasses import dataclass
-from typing import Tuple, List, Dict, Optional, Callable
+from typing import Tuple, List, Dict
 
 
 @dataclass
@@ -55,6 +55,10 @@ class CellularAutomata:
 
     def __repr__(self) -> str:
         return f"CellularAutomata(grid={self.grid_size}, states={self.n_states}, boundary={self.boundary!r})"
+
+    def _ensure_result(self) -> None:
+        if self._result is None:
+            raise RuntimeError("请先调用 run()")
 
     def initialize(self, pattern: str = "random", **kwargs):
         """

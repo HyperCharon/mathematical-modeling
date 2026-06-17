@@ -1,6 +1,6 @@
 """Global configuration for MathFlow."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass

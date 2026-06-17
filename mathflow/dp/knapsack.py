@@ -16,7 +16,7 @@ Example:
 
 import numpy as np
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List
 
 
 @dataclass
@@ -41,9 +41,16 @@ class Knapsack:
     def __init__(self, capacity: float):
         self.capacity = capacity
         self.items = []  # [(weight, value, name)]
+        self._result_01 = None
+        self._result_complete = None
 
     def __repr__(self) -> str:
         return f"Knapsack(capacity={self.capacity}, n_items={len(self.items)})"
+
+    def _ensure_result(self) -> None:
+        """确保至少求解了一种问题."""
+        if self._result_01 is None and self._result_complete is None:
+            raise RuntimeError("请先调用 solve_01() 或 solve_complete()")
 
     def add_item(self, weight: float, value: float, name: str = ""):
         """添加物品."""
@@ -120,6 +127,7 @@ class Knapsack:
 
     def plot_dp(self, result_type="01", figsize=(10, 6)):
         """绘制 DP 表."""
+        self._ensure_result()
         import matplotlib.pyplot as plt
 
         if result_type == "01":
@@ -137,6 +145,7 @@ class Knapsack:
         return fig
 
     def summary(self, result_type="01"):
+        self._ensure_result()
         if result_type == "01":
             r = self._result_01
         else:

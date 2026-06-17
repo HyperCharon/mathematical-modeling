@@ -13,9 +13,7 @@ Example:
     >>> report.save("paper/main.tex")
 """
 
-import numpy as np
-from typing import List, Optional, Dict
-from datetime import datetime
+from typing import List
 
 
 class LatexReport:

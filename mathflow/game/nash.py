@@ -13,7 +13,6 @@ Example:
 """
 
 import numpy as np
-from itertools import product
 from dataclasses import dataclass
 from typing import List, Tuple, Optional
 

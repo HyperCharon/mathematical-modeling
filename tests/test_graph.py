@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from mathflow.graph import ShortestPath, MinSpanningTree, Hungarian, CPM
+from mathflow.graph import ShortestPath, MinSpanningTree, Hungarian, CPM, NetworkFlow, TSPSolver
 
 
 class TestShortestPath:
@@ -54,6 +54,36 @@ class TestCPM:
         assert "B" in result.critical_path
         assert "D" in result.critical_path
         assert "E" in result.critical_path
+
+
+class TestNetworkFlow:
+    def test_max_flow(self):
+        nf = NetworkFlow(n_nodes=4)
+        nf.add_edge(0, 1, 10)
+        nf.add_edge(0, 2, 5)
+        nf.add_edge(1, 2, 15)
+        nf.add_edge(1, 3, 5)
+        nf.add_edge(2, 3, 10)
+        result = nf.max_flow(0, 3)
+        assert result.max_flow_value > 0
+
+    def test_repr(self):
+        nf = NetworkFlow(n_nodes=3)
+        assert "NetworkFlow" in repr(nf)
+
+
+class TestTSPSolver:
+    def test_nearest_neighbor(self):
+        coords = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
+        tsp = TSPSolver(coords=coords)
+        result = tsp.solve(method="nearest_neighbor")
+        assert result.total_distance > 0
+        assert len(result.route) == 5  # returns to start
+
+    def test_repr(self):
+        coords = np.array([[0, 0], [1, 0], [1, 1]])
+        tsp = TSPSolver(coords=coords)
+        assert "TSPSolver" in repr(tsp)
 
 
 if __name__ == "__main__":

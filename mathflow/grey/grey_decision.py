@@ -56,6 +56,10 @@ class GreyDecision:
             return f"GreyDecision(n_samples={self.data.shape[0]}, n_indicators={self.data.shape[1]})"
         return f"GreyDecision(shape={self.data.shape})"
 
+    def _ensure_result(self) -> None:
+        if self._result is None:
+            raise RuntimeError("请先调用 evaluate()")
+
     def evaluate(self, method="grey_relational") -> GreyDecisionResult:
         """
         灰色评价.

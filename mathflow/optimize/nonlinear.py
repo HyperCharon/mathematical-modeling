@@ -16,7 +16,7 @@ Example:
 import numpy as np
 from dataclasses import dataclass
 from typing import Callable, List, Optional, Tuple
-from scipy.optimize import minimize, NonlinearConstraint
+from scipy.optimize import minimize
 
 
 @dataclass
@@ -51,6 +51,10 @@ class NonlinearProgramming:
         if self._result is not None:
             return f"NonlinearProgramming(success={self._result.success}, obj={self._result.optimal_value:.4f})"
         return f"NonlinearProgramming()"
+
+    def _ensure_result(self) -> None:
+        if self._result is None:
+            raise RuntimeError("请先调用 solve()")
 
     def set_objective(self, func: Callable):
         """

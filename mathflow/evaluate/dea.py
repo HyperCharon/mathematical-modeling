@@ -16,7 +16,7 @@ Example:
 
 import numpy as np
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import List
 
 
 @dataclass
@@ -78,8 +78,6 @@ class DEA:
 
     def fit(self) -> DEAResult:
         """执行 DEA 分析."""
-        from scipy.optimize import linprog
-
         n = self.n_dmu
         m = self.inputs.shape[1]  # 投入数
         s = self.outputs.shape[1]  # 产出数

@@ -14,7 +14,7 @@ Example:
 import numpy as np
 from scipy import stats
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 
 @dataclass

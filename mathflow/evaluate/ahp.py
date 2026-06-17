@@ -17,8 +17,7 @@ Example:
 """
 
 import numpy as np
-from dataclasses import dataclass, field
-from typing import Optional
+from dataclasses import dataclass
 from mathflow.core.config import config
 
 

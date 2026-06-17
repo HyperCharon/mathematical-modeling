@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from mathflow.ode import ODESolver, sir_model, damped_oscillator
+from mathflow.ode import ODESolver, sir_model, damped_oscillator, EventODESolver
 
 
 class TestODESolver:
@@ -70,6 +70,19 @@ class TestDampedOscillator:
         first_half_max = np.max(np.abs(result.y[:mid, 0]))
         second_half_max = np.max(np.abs(result.y[mid:, 0]))
         assert first_half_max > second_half_max
+
+
+class TestEventODESolver:
+    def test_basic(self):
+        def f(t, y): return [-y[0]]
+        def event_zero(t, y): return y[0] - 0.5
+        solver = EventODESolver(f, y0=[1.0], events=[event_zero])
+        result = solver.solve(t_span=(0, 5), dt=0.01)
+        assert len(result.t) > 0
+
+    def test_repr(self):
+        solver = EventODESolver(lambda t, y: [-y[0]], y0=[1.0])
+        assert "EventODESolver" in repr(solver)
 
 
 if __name__ == "__main__":

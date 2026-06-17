@@ -14,7 +14,6 @@ Example:
 
 import numpy as np
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
@@ -52,6 +51,10 @@ class TimeSeriesDecompose:
         if self._result is not None:
             return f"TimeSeriesDecompose(n={len(self.data)}, period={self.period}, model={self.model!r})"
         return f"TimeSeriesDecompose(n={len(self.data)}, period={self.period})"
+
+    def _ensure_result(self) -> None:
+        if self._result is None:
+            raise RuntimeError("请先调用 decompose()")
 
     def decompose(self, method="moving_average") -> DecomposeResult:
         """

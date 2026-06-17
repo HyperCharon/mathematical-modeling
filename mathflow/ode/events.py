@@ -13,7 +13,7 @@ Example:
 
 import numpy as np
 from dataclasses import dataclass
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, List
 
 
 @dataclass
@@ -55,6 +55,10 @@ class EventODESolver:
         if self._result is not None:
             return f"EventODESolver(y0={self.y0}, events={len(self.events)}, n_steps={len(self._result.t)})"
         return f"EventODESolver(y0={self.y0}, events={len(self.events)})"
+
+    def _ensure_result(self) -> None:
+        if self._result is None:
+            raise RuntimeError("请先调用 solve()")
 
     def solve(self, t_span=(0, 10), dt=0.01, method="rk4") -> EventODEResult:
         """求解ODE并检测事件."""

@@ -16,9 +16,8 @@ Example:
 
 import numpy as np
 from scipy.optimize import curve_fit
-from scipy import stats
 from dataclasses import dataclass
-from typing import Callable, Optional
+from typing import Callable
 
 
 @dataclass

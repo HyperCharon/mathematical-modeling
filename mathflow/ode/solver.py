@@ -14,7 +14,7 @@ Example:
 
 import numpy as np
 from dataclasses import dataclass
-from typing import Callable, Union, List
+from typing import Callable
 from scipy.integrate import solve_ivp
 
 

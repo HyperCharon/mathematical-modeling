@@ -11,8 +11,6 @@ Example:
 
 import numpy as np
 import pandas as pd
-from typing import Optional, Union
-from pathlib import Path
 
 
 class DataLoader:

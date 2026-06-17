@@ -16,7 +16,7 @@ Example:
 import numpy as np
 import heapq
 from dataclasses import dataclass
-from typing import List, Tuple, Dict, Optional
+from typing import List, Optional
 
 
 @dataclass

@@ -13,7 +13,6 @@ Example:
 
 import numpy as np
 from scipy.special import factorial
-from dataclasses import dataclass
 
 
 class QueueModel:
@@ -53,6 +52,10 @@ class QueueModel:
         if self.K is not None:
             return f"QueueModel(λ={self.lambda_}, μ={self.mu}, c={self.c}, K={self.K})"
         return f"QueueModel(λ={self.lambda_}, μ={self.mu}, c={self.c})"
+
+    def _ensure_result(self) -> None:
+        if self._result is None:
+            raise RuntimeError("请先调用 solve()")
 
     def solve(self):
         """计算排队系统指标."""

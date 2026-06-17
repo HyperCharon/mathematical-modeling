@@ -56,5 +56,33 @@ class TestSensitivityAnalysis:
         assert result.sensitivities[0] > result.sensitivities[1]
 
 
+class TestTwoWayANOVA:
+    def test_two_way(self):
+        """Two-way ANOVA without replication."""
+        data = np.array([
+            [5.2, 4.8, 5.0, 4.5],
+            [6.1, 5.8, 6.0, 5.5],
+            [5.8, 5.5, 5.7, 5.2],
+        ])  # 3 rows (factor A) x 4 cols (factor B)
+        anova = ANOVA()
+        result = anova.two_way(data)
+        assert result is not None
+        assert anova.two_way_result is not None
+
+    def test_two_way_replicated(self):
+        """Two-way ANOVA with replication."""
+        # 2 factors (A: 3 levels, B: 2 levels), 2 replicates
+        # Shape: (3, 2, 2)
+        data = np.array([
+            [[5.2, 4.8], [5.0, 4.5]],
+            [[6.1, 5.8], [6.0, 5.5]],
+            [[5.8, 5.5], [5.7, 5.2]],
+        ])
+        anova = ANOVA()
+        result = anova.two_way_replicated(data)
+        assert result is not None
+        assert anova.two_way_result is not None
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

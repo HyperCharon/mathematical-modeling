@@ -16,7 +16,7 @@ Example:
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional
 from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (accuracy_score, precision_score, recall_score,

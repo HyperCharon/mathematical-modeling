@@ -16,7 +16,7 @@ Example:
 import numpy as np
 import warnings
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Tuple
 
 try:
     from statsmodels.tsa.arima.model import ARIMA as _ARIMA

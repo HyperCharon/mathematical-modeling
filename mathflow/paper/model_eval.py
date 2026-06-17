@@ -13,8 +13,6 @@ Example:
     >>> print(me.generate())
 """
 
-from typing import List, Optional
-
 
 class ModelEvaluator:
     """

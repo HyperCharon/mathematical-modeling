@@ -14,7 +14,7 @@ Example:
     >>> print(ag.generate())
 """
 
-from typing import List, Dict, Optional
+from typing import List
 
 
 class AbstractGenerator:

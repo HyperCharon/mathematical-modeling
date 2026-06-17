@@ -8,7 +8,6 @@ Example:
     >>> result = mst.kruskal()
 """
 
-import numpy as np
 from dataclasses import dataclass
 from typing import List, Tuple
 

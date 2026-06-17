@@ -14,9 +14,7 @@ Example:
 """
 
 import numpy as np
-from scipy.optimize import minimize
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
