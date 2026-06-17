@@ -78,5 +78,22 @@ class TestQueueModel:
             qm.summary()
 
 
+class TestEdgeCases:
+    def test_queue_high_traffic(self):
+        """高负载排队系统."""
+        from mathflow.simulation.queue_model import QueueModel
+        q = QueueModel(arrival_rate=0.99, service_rate=1.0, n_servers=1)
+        result = q.solve()
+        assert result is not None
+        assert result['rho'] > 0.9
+
+    def test_monte_carlo_small_n(self):
+        """小样本蒙特卡洛."""
+        from mathflow.simulation.monte_carlo import MonteCarlo
+        mc = MonteCarlo(seed=42)
+        pi_est, error = mc.estimate_pi(n_samples=100)
+        assert 2.0 < pi_est < 4.0  # 粗略范围
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

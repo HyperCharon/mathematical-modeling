@@ -84,5 +84,22 @@ class TestTwoWayANOVA:
         assert anova.two_way_result is not None
 
 
+class TestEdgeCases:
+    def test_correlation_2vars(self):
+        """2变量相关性分析."""
+        from mathflow.stats import CorrelationAnalysis
+        data = np.array([[1, 2], [3, 4], [5, 6], [7, 8]])
+        ca = CorrelationAnalysis(data)
+        ca.fit()
+        assert ca.corr_matrix.shape == (2, 2)
+
+    def test_anova_identical_groups(self):
+        """完全相同组的 ANOVA."""
+        anova = ANOVA()
+        # 所有组完全相同
+        anova.one_way(np.array([5, 5, 5]), np.array([5, 5, 5]))
+        assert anova.result.p_value > 0.05  # 不应显著
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

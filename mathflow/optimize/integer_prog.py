@@ -34,10 +34,15 @@ class IntegerProgramming:
         self._obj_sense = "min"
         self._constraints = []
         self._var_names = None
+        self._result = None
+
+    def _ensure_result(self):
+        if self._result is None:
+            raise RuntimeError("请先调用 solve() 求解")
 
     def __repr__(self) -> str:
-        if hasattr(self, '_ip_result') and self._ip_result is not None:
-            return f"IntegerProgramming(status={self._ip_result.status!r}, obj={self._ip_result.optimal_value:.4f})"
+        if self._result is not None:
+            return f"IntegerProgramming(status={self._result.status!r}, obj={self._result.optimal_value:.4f})"
         return f"IntegerProgramming(sense={self._obj_sense!r})"
 
     def set_objective(self, coeffs, sense="min", var_names=None):
@@ -111,17 +116,16 @@ class IntegerProgramming:
         optimal_value = pulp.value(prob.objective)
         variables = {self._var_names[i]: solution[i] for i in range(n)}
 
-        self._ip_result = IPResult(
+        self._result = IPResult(
             status=status, optimal_value=optimal_value,
             solution=solution, variables=variables,
         )
-        return self._ip_result
+        return self._result
 
     def summary(self):
         """打印结果摘要."""
-        if not hasattr(self, '_ip_result') or self._ip_result is None:
-            raise RuntimeError("请先调用 solve() 求解")
-        r = self._ip_result
+        self._ensure_result()
+        r = self._result
         lines = ["=" * 50, "  整数规划求解结果", "=" * 50,
                   f"  状态: {r.status}", f"  最优值: {r.optimal_value:.4f}", "-" * 50]
         for name, val in r.variables.items():

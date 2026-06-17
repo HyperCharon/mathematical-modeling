@@ -86,5 +86,19 @@ class TestTSPSolver:
         assert "TSPSolver" in repr(tsp)
 
 
+class TestEdgeCases:
+    def test_shortest_path_single_node(self):
+        """单节点最短路径."""
+        sp = ShortestPath(n_nodes=1)
+        result = sp.dijkstra(0, 0)
+        assert result.distance == 0
+
+    def test_mst_empty_graph(self):
+        """空图 MST."""
+        mst = MinSpanningTree()
+        result = mst.kruskal()
+        assert result.total_weight == 0
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

@@ -139,5 +139,47 @@ class TestRSR:
         assert "RSR" in repr(r)
 
 
+class TestEdgeCases:
+    def test_topsis_single_sample(self):
+        """单样本 TOPSIS 应能运行."""
+        data = np.array([[80, 90, 85]])
+        t = TOPSIS(data, types=[1, 1, 1])
+        t.fit()
+        assert len(t.rankings) == 1
+
+    def test_topsis_constant_column(self):
+        """常数列 TOPSIS 应能运行."""
+        data = np.array([[80, 50, 85], [80, 60, 90], [80, 70, 75]])
+        t = TOPSIS(data, types=[1, 1, 1])
+        t.fit()
+        assert len(t.rankings) == 3
+
+    def test_ahp_2x2(self):
+        """2x2 AHP 矩阵."""
+        ahp = AHP()
+        ahp.set_matrix([[1, 3], [1/3, 1]])
+        ahp.fit()
+        assert len(ahp.weights) == 2
+        assert ahp.is_consistent
+
+    def test_entropy_weight_constant_data(self):
+        """常数数据熵权法应能处理."""
+        data = np.array([[5, 5, 5], [5, 5, 5]])
+        ew = EntropyWeight(data)
+        # 常数数据可能产生 NaN，不应崩溃
+        try:
+            ew.fit()
+        except (ValueError, RuntimeWarning):
+            pass  # 可接受
+
+    def test_gra_single_compare(self):
+        """单比较序列 GRA."""
+        ref = np.array([1, 2, 3])
+        comp = np.array([[1.1, 2.1, 3.1]])
+        gra = GreyRelationalAnalysis(ref, comp)
+        gra.fit()
+        assert len(gra.correlations) == 1
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

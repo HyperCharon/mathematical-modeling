@@ -93,5 +93,21 @@ class TestIntegerProgramming:
         assert "IntegerProgramming" in repr(ip)
 
 
+class TestEdgeCases:
+    def test_ga_single_variable(self):
+        """单变量 GA."""
+        ga = GeneticAlgorithm(lambda x: -x[0]**2, n_vars=1, bounds=[(-5, 5)],
+                              pop_size=10, generations=5)
+        result = ga.run()
+        assert len(result.best_solution) == 1
+
+    def test_pso_single_variable(self):
+        """单变量 PSO."""
+        pso = PSO(lambda x: -x[0]**2, n_vars=1, bounds=[(-5, 5)],
+                  n_particles=10, max_iter=5)
+        result = pso.run()
+        assert len(result.best_position) == 1
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

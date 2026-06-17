@@ -61,5 +61,19 @@ class TestRegressionPredict:
         assert model.r2 > 0.99
 
 
+class TestEdgeCases:
+    def test_grey_prediction_minimum_data(self):
+        """最小数据量灰色预测 (4个点)."""
+        gp = GreyPrediction([10, 20, 30, 40])
+        gp.fit()
+        pred = gp.predict(steps=1)
+        assert len(pred) == 1
+
+    def test_grey_prediction_too_few(self):
+        """不足4个数据点应报错 (ValueError in __init__)."""
+        with pytest.raises(ValueError):
+            GreyPrediction([10, 20, 30])
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

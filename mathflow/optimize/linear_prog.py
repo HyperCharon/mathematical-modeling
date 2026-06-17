@@ -45,10 +45,15 @@ class LinearProgramming:
         self._constraints = []  # [(coeffs, sense, rhs)]
         self._var_names = None
         self._bounds = []
+        self._result = None
+
+    def _ensure_result(self):
+        if self._result is None:
+            raise RuntimeError("请先调用 solve() 求解")
 
     def __repr__(self) -> str:
-        if hasattr(self, '_lp_result') and self._lp_result is not None:
-            return f"LinearProgramming(status={self._lp_result.status!r}, obj={self._lp_result.optimal_value:.4f})"
+        if self._result is not None:
+            return f"LinearProgramming(status={self._result.status!r}, obj={self._result.optimal_value:.4f})"
         return f"LinearProgramming(sense={self._obj_sense!r})"
 
     def set_objective(self, coeffs, sense="min", var_names=None):
@@ -128,13 +133,13 @@ class LinearProgramming:
 
         self._prob = prob
         self._x = x
-        self._lp_result = LPResult(
+        self._result = LPResult(
             status=status,
             optimal_value=optimal_value,
             solution=solution,
             variables=variables,
         )
-        return self._lp_result
+        return self._result
 
     def plot_feasible_region(self, x_range=(0, 15), y_range=(0, 15), figsize=(8, 8)):
         """绘制可行域 (仅限二维问题)."""
@@ -175,12 +180,12 @@ class LinearProgramming:
         ax.contourf(X, Y, feasible.astype(int), levels=[0.5, 1.5], colors=["lightblue"], alpha=0.5)
 
         # 绘制等值线
-        if hasattr(self, '_lp_result') and self._lp_result:
-            opt = self._lp_result.optimal_value
+        if self._result is not None:
+            opt = self._result.optimal_value
             z = self._obj_coeffs[0] * X + self._obj_coeffs[1] * Y
             ax.contour(X, Y, z, levels=[opt], colors=["gold"], linewidths=3, linestyles="--")
-            ax.plot(self._lp_result.solution[0], self._lp_result.solution[1], "r*",
-                    markersize=20, label=f"最优解 ({self._lp_result.solution[0]:.2f}, {self._lp_result.solution[1]:.2f})")
+            ax.plot(self._result.solution[0], self._result.solution[1], "r*",
+                    markersize=20, label=f"最优解 ({self._result.solution[0]:.2f}, {self._result.solution[1]:.2f})")
 
         ax.set_xlim(x_range)
         ax.set_ylim(y_range)
@@ -195,9 +200,8 @@ class LinearProgramming:
 
     def summary(self):
         """打印结果摘要."""
-        if not hasattr(self, '_lp_result') or self._lp_result is None:
-            raise RuntimeError("请先调用 solve() 求解")
-        r = self._lp_result
+        self._ensure_result()
+        r = self._result
         lines = [
             "=" * 50,
             "  线性规划求解结果",
